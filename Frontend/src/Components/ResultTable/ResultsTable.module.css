@@ -1,0 +1,261 @@
+/* ResultsTable.module.css */
+.resultsTable {
+    margin-top: 2rem;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.title {
+    font-size: 1.8rem; /* Increased from 1.5rem */
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.badge {
+    background-color: #e7f1ff;
+    color: #0066cc;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 1rem; /* Increased from 0.875rem */
+    font-weight: 500;
+}
+
+.tableWrapper {
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 1.05rem; /* Increased from 0.9375rem */
+}
+
+.table th {
+    background-color: #f8f9fa;
+    color: #444; /* Darker color for better contrast */
+    font-weight: 600;
+    padding: 1.2rem; /* Increased from 1rem */
+    text-align: left;
+    border-bottom: 1px solid #eaeaea;
+    font-size: 1.1rem; /* Added explicit size for headers */
+}
+
+.table td {
+    padding: 1.2rem; /* Increased from 1rem */
+    border-bottom: 1px solid #eaeaea;
+    vertical-align: top;
+    color: #333; /* Darker color for better contrast */
+}
+
+.urlColumn {
+    width: 25%;
+}
+
+.url {
+    background-color: #fafafa;
+}
+
+.urlWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Increased from 0.5rem */
+}
+
+.urlText {
+    word-break: break-all;
+    color: #0052a3; /* Darker blue for better contrast */
+    font-weight: 500;
+    font-size: 1.05rem; /* Added explicit size */
+}
+
+.problemCount {
+    font-size: 0.95rem; /* Increased from 0.8125rem */
+    color: #555; /* Darker color for better contrast */
+    font-weight: normal;
+}
+
+.problemCell,
+.solutionCell,
+.impactCell {
+    line-height: 1.6; /* Increased from 1.5 */
+    font-size: 1.05rem; /* Added explicit size */
+}
+
+.noProblems {
+    text-align: center;
+}
+
+.successMessage {
+    color: #15803d; /* Slightly darker green for better contrast */
+    font-weight: 500;
+    font-size: 1.05rem; /* Added explicit size */
+}
+
+.emptyState {
+    text-align: center;
+    padding: 3.5rem 1rem; /* Increased vertical padding */
+    background-color: #fafafa;
+    border-radius: 8px;
+    border: 1px dashed #ddd;
+}
+
+.emptyIcon {
+    width: 56px; /* Increased from 48px */
+    height: 56px; /* Increased from 48px */
+    margin-bottom: 1.2rem; /* Increased from 1rem */
+    color: #0052a3; /* Darker blue for better contrast */
+}
+
+.emptyText {
+    font-size: 1.25rem; /* Increased from 1.125rem */
+    color: #444; /* Darker color for better contrast */
+    margin: 0 0 0.75rem; /* Increased bottom margin */
+}
+
+.emptySubtext {
+    font-size: 1rem; /* Increased from 0.875rem */
+    color: #666; /* Darker color for better contrast */
+    margin: 0;
+}
+
+/* Hover effects */
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .badge {
+        align-self: flex-start;
+    }
+
+    .table {
+        font-size: 1rem; /* Increased from 0.875rem */
+    }
+
+    .table th,
+    .table td {
+        padding: 1rem; /* Increased from 0.75rem */
+    }
+
+    .problemCell,
+    .solutionCell,
+    .impactCell {
+        min-width: 200px;
+        font-size: 1rem; /* Added explicit size for mobile */
+    }
+
+    .title {
+        font-size: 1.6rem; /* Slightly smaller for mobile */
+    }
+}
+
+.loaderWrapper {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.loader {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #ccc;
+    border-top-color: #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loadingRow {
+    text-align: center;
+    background-color: #f9f9f9;
+    color: #666;
+}
+
+.progressContainer {
+    width: 50%;
+    height: 4px;
+    border-radius: 4px;
+    background-color: #e0e0e0;
+}
+
+.progressBar {
+    height: 4px;
+    border-radius: 4px;
+    animation: progress-bar-stripes 2s linear infinite;
+}
+
+@keyframes progress-bar-stripes {
+    from {
+        background-position: 1rem 0;
+    }
+    to {
+        background-position: 0 0;
+    }
+}
+
+.loader {
+    border: 4px solid #0066cc;
+    border-top-color: transparent;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loaderDetails {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.loaderDetails span {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.progressBar.customProgressBar {
+    background-color: #007bff; /* Blue color that matches the UI */
+    height: 8px; /* Reduced height for a smaller loader */
+}
+
+.loader.customLoader {
+    border: 4px solid #007bff; /* Blue color for the circular loader */
+    border-top-color: transparent; /* Transparent top to make it look more like a spinner */
+    border-radius: 50%; /* Ensures the loader is circular */
+    animation: spin 1s linear infinite; /* Add a smooth spinning animation */
+}
