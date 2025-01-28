@@ -29,7 +29,7 @@ const analyze = async (req, res) => {
 
   // Lambda invocation parameters
   const lambdaParams = {
-    FunctionName: "WebsiteAnalysisFunction", // Replace with your Lambda function name
+    FunctionName: "demoWebsiteAnalysisResults", // Replace with your Lambda function name
     InvocationType: "Event", // Asynchronous invocation (Event)
     Payload: JSON.stringify({ url, taskId }), // Pass URL and taskId to the Lambda
   };
