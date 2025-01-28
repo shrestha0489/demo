@@ -4,8 +4,7 @@ import ResultsTable from "../ResultTable/ResultsTable";
 import styles from "./Analyze.module.css";
 
 const CONFIG = {
-  WEBSOCKET_URL:
-    "wss://he7ifebjve.execute-api.us-east-1.amazonaws.com/production/",
+  WEBSOCKET_URL: "wss://he7ifebjve.execute-api.us-east-1.amazonaws.com/production/",
   RECONNECT_DELAY: 3000,
   MAX_RECONNECT_ATTEMPTS: 5,
 };
@@ -15,58 +14,24 @@ const DEFAULT_ERROR_MESSAGE = "An unexpected error occurred. Please try again.";
 const AnalyzePage = () => {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isFetchingHistory, setIsFetchingHistory] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [wsConnection, setWsConnection] = useState(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const [reconnectAttempts, setReconnectAttempts] = useState(0);
-  const [hasAttemptedConnection, setHasAttemptedConnection] = useState(false); // New state
+  const [wsConnected, setWsConnected] = useState(false);
 
   useEffect(() => {
-    fetchHistoricalRecords();
-  }, []);
-
-  const fetchHistoricalRecords = async () => {
-    try {
-      setIsFetchingHistory(true);
-      const response = await api.get("/fetchRecords");
-      if (response.data.success) {
-        const transformedData = response.data.data.map((record) => ({
-          taskId: record.taskId,
-          url: record.url,
-          status: record.status,
-          timestamp: record.timestamp,
-          problems: record.problems || [],
-          loading: false,
-        }));
-        setData(transformedData);
-      }
-    } catch (err) {
-      console.error("Error fetching historical records:", err);
-      setError("Failed to load historical analysis records");
-    } finally {
-      setIsFetchingHistory(false);
-    }
-  };
-
-  useEffect(() => {
-    let reconnectTimer;
-
     const connectWebSocket = () => {
-      if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
-        console.log("WebSocket already connected. No need to reconnect.");
-        return;
-      }
-
       const ws = new WebSocket(CONFIG.WEBSOCKET_URL);
 
       ws.onopen = () => {
         console.log("WebSocket connected");
-        setWsConnection(ws); // Update wsConnection
-        setIsConnected(true);
-        setReconnectAttempts(0); // Reset reconnect attempts on success
-        setError("");
+        setWsConnection(ws);
+        setWsConnected(true);
+      };
+
+      ws.onclose = () => {
+        console.log("WebSocket disconnected");
+        setWsConnected(false);
       };
 
       ws.onmessage = (event) => {
@@ -78,40 +43,15 @@ const AnalyzePage = () => {
         }
       };
 
-      ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
-        setError("Connection error. Please check your API key and try again.");
-        setIsConnected(false);
-      };
-
-      ws.onclose = (event) => {
-        console.log(`WebSocket closed with code ${event.code}`, event.reason);
-        setIsConnected(false);
-        if (reconnectAttempts < CONFIG.MAX_RECONNECT_ATTEMPTS) {
-          setHasAttemptedConnection(true);
-          reconnectTimer = setTimeout(() => {
-            setReconnectAttempts((prev) => prev + 1);
-            connectWebSocket();
-          }, CONFIG.RECONNECT_DELAY);
-        } else {
-          setError(
-            "Maximum reconnection attempts reached. Please refresh the page."
-          );
-        }
-      };
+      return ws;
     };
 
-    connectWebSocket(); // Initial connection
+    const ws = connectWebSocket();
 
     return () => {
-      if (wsConnection) {
-        wsConnection.close(); // Clean up existing connection
-      }
-      if (reconnectTimer) {
-        clearTimeout(reconnectTimer); // Clean up any pending reconnect attempts
-      }
+      if (ws) ws.close();
     };
-  }, [reconnectAttempts]);
+  }, []);
 
   const subscribeToTask = useCallback(
     (taskId) => {
@@ -127,57 +67,47 @@ const AnalyzePage = () => {
     [wsConnection]
   );
 
-  const handleWebSocketMessage = useCallback((message) => {
-    if (!message || typeof message !== "object") {
-      console.error("Received invalid WebSocket message:", message);
-      return;
-    }
+  const handleWebSocketMessage = useCallback(
+    (message) => {
+      if (!message || typeof message !== "object") {
+        console.error("Received invalid WebSocket message:", message);
+        return;
+      }
 
-    console.log("WebSocket Message Received:", message);
+      const {
+        taskId,
+        status,
+        problems = [],
+        currentStep = "",
+        progress = 0,
+        timestamp = new Date().toISOString(),
+      } = message;
 
-    const {
-      taskId,
-      status,
-      problems = [],
-      currentStep = "",
-      progress = 0,
-      timestamp = new Date().toISOString(),
-    } = message;
+      if (!taskId || !status) {
+        console.error("Message is missing required fields:", message);
+        return;
+      }
 
-    if (!taskId || !status) {
-      console.error(
-        "Message is missing required fields (taskId or status):",
-        message
-      );
-      return;
-    }
+      setData((prevData) => ({
+        ...prevData,
+        status,
+        problems,
+        currentStep,
+        progress,
+        timestamp,
+        loading: status !== "completed" && status !== "error",
+      }));
 
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.taskId === taskId
-          ? {
-              ...item,
-              status,
-              problems, // Update problems if present
-              currentStep, // Update the current step
-              progress, // Update progress if present
-              timestamp, // Always update timestamp
-              loading: status !== "completed" && status !== "error", // Update loading based on status
-            }
-          : item
-      )
-    );
+      if (status === "completed" || status === "error") {
+        setIsLoading(false);
+      }
 
-    // If task is completed or errored, stop loading
-    if (status === "completed" || status === "error") {
-      setIsLoading(false);
-    }
-
-    // Handle error case with detailed feedback
-    if (status === "error" && message.error) {
-      setError(`Analysis failed: ${message.error}`);
-    }
-  }, []);
+      if (status === "error" && message.error) {
+        setError(`Analysis failed: ${message.error}`);
+      }
+    },
+    []
+  );
 
   const handleAnalyze = async (e) => {
     if (e) e.preventDefault();
@@ -194,10 +124,6 @@ const AnalyzePage = () => {
       return;
     }
 
-    if (!isConnected) {
-      setError("Warning: WebSocket disconnected. Results may be delayed.");
-    }
-
     setError("");
     setIsLoading(true);
 
@@ -205,17 +131,16 @@ const AnalyzePage = () => {
       const response = await api.post("/analyze", { url: trimmedUrl });
       const taskId = response.data.taskId;
 
-      setData((prevData) => [
-        {
-          taskId,
-          url: trimmedUrl,
-          status: "pending",
-          timestamp: new Date().toISOString(),
-          problems: [],
-          loading: true,
-        },
-        ...prevData,
-      ]);
+      setData({
+        taskId,
+        url: trimmedUrl,
+        status: "pending",
+        timestamp: new Date().toISOString(),
+        problems: [],
+        loading: true,
+        progress: 0,
+        currentStep: "Initializing analysis...",
+      });
 
       subscribeToTask(taskId);
       setUrl("");
@@ -257,15 +182,14 @@ const AnalyzePage = () => {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               className={styles.input}
-              disabled={isLoading}
+              disabled={isLoading || !wsConnected}
             />
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !wsConnected}
               className={styles.button}
             >
-              {isLoading && <div className={styles.spinner}></div>}
-              {isLoading ? "Analyzing..." : "Analyze"}
+              {isLoading ? "Analyzing..." : wsConnected ? "Analyze" : "Connecting..."}
             </button>
           </form>
 
@@ -276,17 +200,8 @@ const AnalyzePage = () => {
             </div>
           )}
 
-          {!isConnected && hasAttemptedConnection && (
-            <div className={styles.alert}>
-              <div className={styles.alertIcon}>⚠️</div>
-              <p className={styles.alertText}>
-                Connection lost. Attempting to reconnect...
-              </p>
-            </div>
-          )}
-
           <div className={styles.resultsContainer}>
-            <ResultsTable data={data} isLoading={isFetchingHistory} />
+            <ResultsTable data={data} />
           </div>
         </div>
       </div>

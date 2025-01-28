@@ -1,6 +1,62 @@
-/* ResultsTable.module.css */
 .resultsTable {
+    position: relative;
     margin-top: 2rem;
+}
+
+.tableLoaderContainer {
+    position: relative;
+}
+
+.tableLoaderOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.tableLoaderContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.spinnerLarge {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #0066cc;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+.progressContainer {
+    width: 300px;
+    height: 6px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.progressBarFull {
+    height: 6px;
+    width: 0;
+    background-color: #0066cc;
+    transition: width 0.5s ease-in-out;
+}
+
+.loaderText {
+    color: #333;
+    font-size: 16px;
 }
 
 .header {
@@ -11,7 +67,7 @@
 }
 
 .title {
-    font-size: 1.8rem; /* Increased from 1.5rem */
+    font-size: 1.8rem;
     font-weight: 600;
     color: #1a1a1a;
     margin: 0;
@@ -22,7 +78,7 @@
     color: #0066cc;
     padding: 0.5rem 1rem;
     border-radius: 20px;
-    font-size: 1rem; /* Increased from 0.875rem */
+    font-size: 1rem;
     font-weight: 500;
 }
 
@@ -36,98 +92,82 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 1.05rem; /* Increased from 0.9375rem */
+    font-size: 1.05rem;
 }
 
 .table th {
     background-color: #f8f9fa;
-    color: #444; /* Darker color for better contrast */
+    color: #444;
     font-weight: 600;
-    padding: 1.2rem; /* Increased from 1rem */
-    text-align: left;
+    padding: 1.2rem;
+    text-align: center;
     border-bottom: 1px solid #eaeaea;
-    font-size: 1.1rem; /* Added explicit size for headers */
 }
 
 .table td {
-    padding: 1.2rem; /* Increased from 1rem */
+    padding: 1.2rem;
     border-bottom: 1px solid #eaeaea;
     vertical-align: top;
-    color: #333; /* Darker color for better contrast */
+    color: #333;
 }
 
 .urlColumn {
     width: 25%;
 }
 
-.url {
-    background-color: #fafafa;
-}
-
 .urlWrapper {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem; /* Increased from 0.5rem */
+    gap: 0.75rem;
 }
 
 .urlText {
-    word-break: break-all;
-    color: #0052a3; /* Darker blue for better contrast */
+    word-break: break-word;
+    color: #0052a3;
     font-weight: 500;
-    font-size: 1.05rem; /* Added explicit size */
-}
-
-.problemCount {
-    font-size: 0.95rem; /* Increased from 0.8125rem */
-    color: #555; /* Darker color for better contrast */
-    font-weight: normal;
 }
 
 .problemCell,
 .solutionCell,
 .impactCell {
-    line-height: 1.6; /* Increased from 1.5 */
-    font-size: 1.05rem; /* Added explicit size */
+    line-height: 1.6;
 }
 
 .noProblems {
     text-align: center;
-}
-
-.successMessage {
-    color: #15803d; /* Slightly darker green for better contrast */
+    color: #15803d;
     font-weight: 500;
-    font-size: 1.05rem; /* Added explicit size */
+    font-size: 1.05rem;
 }
 
 .emptyState {
     text-align: center;
-    padding: 3.5rem 1rem; /* Increased vertical padding */
+    padding: 3.5rem 1rem;
     background-color: #fafafa;
     border-radius: 8px;
     border: 1px dashed #ddd;
 }
 
 .emptyIcon {
-    width: 56px; /* Increased from 48px */
-    height: 56px; /* Increased from 48px */
-    margin-bottom: 1.2rem; /* Increased from 1rem */
-    color: #0052a3; /* Darker blue for better contrast */
+    width: 56px;
+    height: 56px;
+    margin-bottom: 1.2rem;
+    color: #0052a3;
 }
 
 .emptyText {
-    font-size: 1.25rem; /* Increased from 1.125rem */
-    color: #444; /* Darker color for better contrast */
-    margin: 0 0 0.75rem; /* Increased bottom margin */
+    font-size: 1.25rem;
+    color: #444;
+    margin: 0 0 0.75rem;
 }
 
 .emptySubtext {
-    font-size: 1rem; /* Increased from 0.875rem */
-    color: #666; /* Darker color for better contrast */
+    font-size: 1rem;
+    color: #666;
     margin: 0;
 }
 
-/* Hover effects */
+/* Hover effect for rows */
 .table tbody tr:hover {
     background-color: #f8f9fa;
 }
@@ -144,44 +184,23 @@
         align-self: flex-start;
     }
 
-    .table {
-        font-size: 1rem; /* Increased from 0.875rem */
-    }
-
     .table th,
     .table td {
-        padding: 1rem; /* Increased from 0.75rem */
+        padding: 1rem;
     }
 
     .problemCell,
     .solutionCell,
     .impactCell {
         min-width: 200px;
-        font-size: 1rem; /* Added explicit size for mobile */
     }
 
     .title {
-        font-size: 1.6rem; /* Slightly smaller for mobile */
+        font-size: 1.6rem;
     }
 }
 
-.loaderWrapper {
-    width: 90%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-}
-
-.loader {
-    width: 1rem;
-    height: 1rem;
-    border: 2px solid #ccc;
-    border-top-color: #007bff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
+/* Keyframes for animations */
 @keyframes spin {
     from {
         transform: rotate(0deg);
@@ -189,73 +208,4 @@
     to {
         transform: rotate(360deg);
     }
-}
-
-.loadingRow {
-    text-align: center;
-    background-color: #f9f9f9;
-    color: #666;
-}
-
-.progressContainer {
-    width: 50%;
-    height: 4px;
-    border-radius: 4px;
-    background-color: #e0e0e0;
-}
-
-.progressBar {
-    height: 4px;
-    border-radius: 4px;
-    animation: progress-bar-stripes 2s linear infinite;
-}
-
-@keyframes progress-bar-stripes {
-    from {
-        background-position: 1rem 0;
-    }
-    to {
-        background-position: 0 0;
-    }
-}
-
-.loader {
-    border: 4px solid #0066cc;
-    border-top-color: transparent;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.loaderDetails {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.loaderDetails span {
-    color: #666;
-    font-size: 0.9em;
-}
-
-.progressBar.customProgressBar {
-    background-color: #007bff; /* Blue color that matches the UI */
-    height: 8px; /* Reduced height for a smaller loader */
-}
-
-.loader.customLoader {
-    border: 4px solid #007bff; /* Blue color for the circular loader */
-    border-top-color: transparent; /* Transparent top to make it look more like a spinner */
-    border-radius: 50%; /* Ensures the loader is circular */
-    animation: spin 1s linear infinite; /* Add a smooth spinning animation */
 }
