@@ -10,6 +10,9 @@ app.use(cors());
 
 app.use("/api", router);
 
+app.get("/", (req, res) => {
+  res.send("Welcome to the API");
+});
 
 // Start the server
 app.listen(PORT, () => {
