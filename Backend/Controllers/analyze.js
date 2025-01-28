@@ -1,19 +1,19 @@
-const AWS = require('aws-sdk');
-AWS.config.update({ region: 'us-east-1' });
+const AWS = require("aws-sdk");
+AWS.config.update({ region: "us-east-1" });
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const lambda = new AWS.Lambda(); // Lambda client
 
 async function createTask(url, taskId) {
   const params = {
-    TableName: 'WebsiteAnalysisResults',
+    TableName: "demoWebsiteAnalysisResults",
     Item: {
       taskId,
       url,
-      status: 'pending',
+      status: "pending",
       timestamp: new Date().toISOString(),
     },
   };
-  
+
   return dynamoDb.put(params).promise();
 }
 
@@ -29,8 +29,8 @@ const analyze = async (req, res) => {
 
   // Lambda invocation parameters
   const lambdaParams = {
-    FunctionName: 'WebsiteAnalysisFunction', // Replace with your Lambda function name
-    InvocationType: 'Event', // Asynchronous invocation (Event)
+    FunctionName: "WebsiteAnalysisFunction", // Replace with your Lambda function name
+    InvocationType: "Event", // Asynchronous invocation (Event)
     Payload: JSON.stringify({ url, taskId }), // Pass URL and taskId to the Lambda
   };
 
