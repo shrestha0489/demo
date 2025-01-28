@@ -4,7 +4,8 @@ import ResultsTable from "../ResultTable/ResultsTable";
 import styles from "./Analyze.module.css";
 
 const CONFIG = {
-  WEBSOCKET_URL: "wss://hfpbr7oc1m.execute-api.us-east-1.amazonaws.com/dev/",
+  WEBSOCKET_URL:
+    "wss://he7ifebjve.execute-api.us-east-1.amazonaws.com/production/",
   RECONNECT_DELAY: 3000,
   MAX_RECONNECT_ATTEMPTS: 5,
 };
@@ -51,15 +52,15 @@ const AnalyzePage = () => {
 
   useEffect(() => {
     let reconnectTimer;
-  
+
     const connectWebSocket = () => {
       if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
         console.log("WebSocket already connected. No need to reconnect.");
         return;
       }
-  
+
       const ws = new WebSocket(CONFIG.WEBSOCKET_URL);
-  
+
       ws.onopen = () => {
         console.log("WebSocket connected");
         setWsConnection(ws); // Update wsConnection
@@ -67,7 +68,7 @@ const AnalyzePage = () => {
         setReconnectAttempts(0); // Reset reconnect attempts on success
         setError("");
       };
-  
+
       ws.onmessage = (event) => {
         try {
           const message = JSON.parse(event.data);
@@ -76,13 +77,13 @@ const AnalyzePage = () => {
           console.error("Error parsing WebSocket message:", err);
         }
       };
-  
+
       ws.onerror = (error) => {
         console.error("WebSocket error:", error);
         setError("Connection error. Please check your API key and try again.");
         setIsConnected(false);
       };
-  
+
       ws.onclose = (event) => {
         console.log(`WebSocket closed with code ${event.code}`, event.reason);
         setIsConnected(false);
@@ -94,14 +95,14 @@ const AnalyzePage = () => {
           }, CONFIG.RECONNECT_DELAY);
         } else {
           setError(
-            "Maximum reconnection attempts reached. Please refresh the page.",
+            "Maximum reconnection attempts reached. Please refresh the page."
           );
         }
       };
     };
-  
+
     connectWebSocket(); // Initial connection
-  
+
     return () => {
       if (wsConnection) {
         wsConnection.close(); // Clean up existing connection
@@ -119,11 +120,11 @@ const AnalyzePage = () => {
           JSON.stringify({
             action: "subscribe",
             taskId: taskId,
-          }),
+          })
         );
       }
     },
-    [wsConnection],
+    [wsConnection]
   );
 
   const handleWebSocketMessage = useCallback((message) => {
@@ -146,7 +147,7 @@ const AnalyzePage = () => {
     if (!taskId || !status) {
       console.error(
         "Message is missing required fields (taskId or status):",
-        message,
+        message
       );
       return;
     }
@@ -163,8 +164,8 @@ const AnalyzePage = () => {
               timestamp, // Always update timestamp
               loading: status !== "completed" && status !== "error", // Update loading based on status
             }
-          : item,
-      ),
+          : item
+      )
     );
 
     // If task is completed or errored, stop loading
