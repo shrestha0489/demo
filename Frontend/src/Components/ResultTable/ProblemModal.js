@@ -6,7 +6,7 @@ function ProblemModal({ problem, show, handleClose }) {
   if (!problem) return null;
   console.log("PROBLEM ", problem);
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} dialogClassName={styles.modal60w}>
       <Modal.Header closeButton>
         <Modal.Title>Problem</Modal.Title>
       </Modal.Header>
