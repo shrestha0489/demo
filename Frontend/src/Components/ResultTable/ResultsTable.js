@@ -80,7 +80,9 @@ const ResultsTable = ({ data }) => {
       <div className={styles.header}>
         <h2 className={styles.title}>Analysis Results</h2>
       </div>
-      <div className={styles.urlText}>{url}</div>
+      <a href={url} target="_blank" className={styles.urlText}>
+        {url}
+      </a>
       <div className={styles.emptyState}>
         {loading ? (
           <TableLoader progress={progress || 0} currentStep={currentStep} />

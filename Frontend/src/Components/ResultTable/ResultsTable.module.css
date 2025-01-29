@@ -126,6 +126,7 @@
   color: #0052a3;
   font-weight: 500;
   padding-bottom: 10px;
+  display: block;
 }
 
 .problemCell,
