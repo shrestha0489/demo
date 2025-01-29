@@ -47,18 +47,44 @@ const websiteIssues = {
       impactText: "A mobile-friendly page can reduce bounce rates by 30%.",
     },
   ],
-  "getgsi.com": [
+  "Squadcast.com": [
     {
-      problemDescription: "The about page has too much text without visuals.",
-      solutionText:
-        "Add relevant images and break up text into smaller sections.",
-      impactText: "Improving readability can enhance user engagement by 25%.",
+      problemDescription: "The page has a slow load time.",
+      solutionText: "Optimize images and leverage caching to reduce load time.",
+      impactText: "Improving load time can increase conversions by up to 15%.",
     },
     {
-      problemDescription: "The page lacks social proof (testimonials/reviews).",
-      solutionText: "Include customer testimonials or reviews to build trust.",
+      problemDescription: "The call-to-action button is not prominent.",
+      solutionText:
+        "Change the color and size of the call-to-action button to make it more visible.",
       impactText:
-        "Adding social proof can improve credibility and conversion rates.",
+        "A prominent call-to-action can increase click-through rates by 20%.",
+    },
+    {
+      problemDescription: "The page is not mobile-friendly.",
+      solutionText:
+        "Implement responsive design to improve the mobile experience.",
+      impactText: "A mobile-friendly page can reduce bounce rates by 30%.",
+    },
+  ],
+  "Flawless.com": [
+    {
+      problemDescription: "The page has a slow load time.",
+      solutionText: "Optimize images and leverage caching to reduce load time.",
+      impactText: "Improving load time can increase conversions by up to 15%.",
+    },
+    {
+      problemDescription: "The call-to-action button is not prominent.",
+      solutionText:
+        "Change the color and size of the call-to-action button to make it more visible.",
+      impactText:
+        "A prominent call-to-action can increase click-through rates by 20%.",
+    },
+    {
+      problemDescription: "The page is not mobile-friendly.",
+      solutionText:
+        "Implement responsive design to improve the mobile experience.",
+      impactText: "A mobile-friendly page can reduce bounce rates by 30%.",
     },
   ],
 };
