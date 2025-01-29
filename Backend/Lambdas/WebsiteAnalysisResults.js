@@ -47,7 +47,7 @@ const websiteIssues = {
       impactText: "A mobile-friendly page can reduce bounce rates by 30%.",
     },
   ],
-  "Squadcast.com": [
+  "squadcast.com": [
     {
       problemDescription: "The page has a slow load time.",
       solutionText: "Optimize images and leverage caching to reduce load time.",
@@ -67,7 +67,7 @@ const websiteIssues = {
       impactText: "A mobile-friendly page can reduce bounce rates by 30%.",
     },
   ],
-  "Flawless.com": [
+  "flawless.com": [
     {
       problemDescription: "The page has a slow load time.",
       solutionText: "Optimize images and leverage caching to reduce load time.",
@@ -90,7 +90,7 @@ const websiteIssues = {
 };
 
 const normalizeUrl = (url) => {
-  return url.replace(/^https?:\/\//, "");
+  return url.replace(/^https?:\/\//, "").toLowerCase();
 };
 
 // Helper function to validate if URL exists in our database
