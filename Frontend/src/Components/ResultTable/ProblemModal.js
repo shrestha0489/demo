@@ -1,6 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import styles from "./ProblemModal.module.css";
+import Markdown from "react-markdown";
 
 function ProblemModal({ problem, show, handleClose }) {
   if (!problem) return null;
@@ -13,11 +14,11 @@ function ProblemModal({ problem, show, handleClose }) {
       <Modal.Body>
         <div>
           <h5>Problem Description</h5>
-          <p>{problem.problemDescription}</p>
+          <Markdown>{problem.problemDescription}</Markdown>
           <h5>Problem Solution</h5>
-          <p className={styles.prewrap}>{problem.solutionText}</p>
+          <Markdown>{problem.solutionText}</Markdown>
           <h5>Problem Impact</h5>
-          <p>{problem.impactText}</p>
+          <Markdown>{problem.impactText}</Markdown>
         </div>
       </Modal.Body>
       <Modal.Footer>
