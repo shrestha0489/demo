@@ -58,14 +58,14 @@ const ResultsTable = ({ data }) => {
     );
   }
 
-  const { loading, problems, progress, currentStep,url } = data;
+  const { loading, problems, progress, currentStep, url } = data;
 
   return (
     <div className={`${styles.resultsTable} ${styles.tableLoaderContainer}`}>
       <div className={styles.header}>
         <h2 className={styles.title}>Analysis Results</h2>
       </div>
-
+      <div className={styles.urlText}>{url}</div>
       <div className={styles.emptyState}>
         {loading ? (
           <TableLoader progress={progress || 0} currentStep={currentStep} />
@@ -74,7 +74,7 @@ const ResultsTable = ({ data }) => {
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <th className={styles.urlColumn}>URL</th>
+                  {/* <th className={styles.urlColumn}>URL</th> */}
                   <th>Problem Description</th>
                   <th>Solution</th>
                   <th>Impact</th>
@@ -84,13 +84,13 @@ const ResultsTable = ({ data }) => {
                 {problems && problems.length > 0 ? (
                   problems.map((problem, problemIndex) => (
                     <tr key={problemIndex}>
-                      {problemIndex === 0 && (
+                      {/* {problemIndex === 0 && (
                         <td className={styles.url} rowSpan={problems.length}>
                           <div className={styles.urlWrapper}>
                             <span className={styles.urlText}>{url}</span>
                           </div>
                         </td>
-                      )}
+                      )} */}
                       <td>
                         <div className={styles.problemCell}>
                           {problem.problemDescription}

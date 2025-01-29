@@ -1,211 +1,212 @@
 .resultsTable {
-    position: relative;
-    margin-top: 2rem;
+  position: relative;
+  margin-top: 2rem;
 }
 
 .tableLoaderContainer {
-    position: relative;
+  position: relative;
 }
 
 .tableLoaderOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
 
 .tableLoaderContent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
 }
 
 .spinnerLarge {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #0066cc;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 20px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #0066cc;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
 }
 
 .progressContainer {
-    width: 300px;
-    height: 6px;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-bottom: 15px;
+  width: 300px;
+  height: 6px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 15px;
 }
 
 .progressBarFull {
-    height: 6px;
-    width: 0;
-    background-color: #0066cc;
-    transition: width 0.5s ease-in-out;
+  height: 6px;
+  width: 0;
+  background-color: #0066cc;
+  transition: width 0.5s ease-in-out;
 }
 
 .loaderText {
-    color: #333;
-    font-size: 16px;
+  color: #333;
+  font-size: 16px;
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
 }
 
 .title {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
 }
 
 .badge {
-    background-color: #e7f1ff;
-    color: #0066cc;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 1rem;
-    font-weight: 500;
+  background-color: #e7f1ff;
+  color: #0066cc;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .tableWrapper {
-    border: 1px solid #eaeaea;
-    border-radius: 8px;
-    overflow-x: auto;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  overflow-x: auto;
 }
 
 .table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    font-size: 1.05rem;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 1.05rem;
 }
 
 .table th {
-    background-color: #f8f9fa;
-    color: #444;
-    font-weight: 600;
-    padding: 1.2rem;
-    text-align: center;
-    border-bottom: 1px solid #eaeaea;
+  background-color: #f8f9fa;
+  color: #444;
+  font-weight: 600;
+  padding: 1.2rem;
+  text-align: center;
+  border-bottom: 1px solid #eaeaea;
 }
 
 .table td {
-    padding: 1.2rem;
-    border-bottom: 1px solid #eaeaea;
-    vertical-align: top;
-    color: #333;
+  padding: 1.2rem;
+  border-bottom: 1px solid #eaeaea;
+  vertical-align: top;
+  color: #333;
 }
 
 .urlColumn {
-    width: 25%;
+  width: 25%;
 }
 
 .urlWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .urlText {
-    word-break: break-word;
-    color: #0052a3;
-    font-weight: 500;
+  word-break: break-word;
+  color: #0052a3;
+  font-weight: 500;
+  padding-bottom: 10px;
 }
 
 .problemCell,
 .solutionCell,
 .impactCell {
-    line-height: 1.6;
+  line-height: 1.6;
 }
 
 .noProblems {
-    text-align: center;
-    color: #15803d;
-    font-weight: 500;
-    font-size: 1.05rem;
+  text-align: center;
+  color: #15803d;
+  font-weight: 500;
+  font-size: 1.05rem;
 }
 
 .emptyState {
-    text-align: center;
-    padding: 3.5rem 1rem;
-    background-color: #fafafa;
-    border-radius: 8px;
-    border: 1px dashed #ddd;
+  text-align: center;
+  padding: 3.5rem 1rem;
+  background-color: #fafafa;
+  border-radius: 8px;
+  border: 1px dashed #ddd;
 }
 
 .emptyIcon {
-    width: 56px;
-    height: 56px;
-    margin-bottom: 1.2rem;
-    color: #0052a3;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 1.2rem;
+  color: #0052a3;
 }
 
 .emptyText {
-    font-size: 1.25rem;
-    color: #444;
-    margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  color: #444;
+  margin: 0 0 0.75rem;
 }
 
 .emptySubtext {
-    font-size: 1rem;
-    color: #666;
-    margin: 0;
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
 }
 
 /* Hover effect for rows */
 .table tbody tr:hover {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 
-    .badge {
-        align-self: flex-start;
-    }
+  .badge {
+    align-self: flex-start;
+  }
 
-    .table th,
-    .table td {
-        padding: 1rem;
-    }
+  .table th,
+  .table td {
+    padding: 1rem;
+  }
 
-    .problemCell,
-    .solutionCell,
-    .impactCell {
-        min-width: 200px;
-    }
+  .problemCell,
+  .solutionCell,
+  .impactCell {
+    min-width: 200px;
+  }
 
-    .title {
-        font-size: 1.6rem;
-    }
+  .title {
+    font-size: 1.6rem;
+  }
 }
 
 /* Keyframes for animations */
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

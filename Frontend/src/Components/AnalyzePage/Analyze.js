@@ -4,7 +4,8 @@ import ResultsTable from "../ResultTable/ResultsTable";
 import styles from "./Analyze.module.css";
 
 const CONFIG = {
-  WEBSOCKET_URL: "wss://he7ifebjve.execute-api.us-east-1.amazonaws.com/production/",
+  WEBSOCKET_URL:
+    "wss://he7ifebjve.execute-api.us-east-1.amazonaws.com/production/",
   RECONNECT_DELAY: 3000,
   MAX_RECONNECT_ATTEMPTS: 5,
 };
@@ -67,47 +68,44 @@ const AnalyzePage = () => {
     [wsConnection]
   );
 
-  const handleWebSocketMessage = useCallback(
-    (message) => {
-      if (!message || typeof message !== "object") {
-        console.error("Received invalid WebSocket message:", message);
-        return;
-      }
+  const handleWebSocketMessage = useCallback((message) => {
+    if (!message || typeof message !== "object") {
+      console.error("Received invalid WebSocket message:", message);
+      return;
+    }
 
-      const {
-        taskId,
-        status,
-        problems = [],
-        currentStep = "",
-        progress = 0,
-        timestamp = new Date().toISOString(),
-      } = message;
+    const {
+      taskId,
+      status,
+      problems = [],
+      currentStep = "",
+      progress = 0,
+      timestamp = new Date().toISOString(),
+    } = message;
 
-      if (!taskId || !status) {
-        console.error("Message is missing required fields:", message);
-        return;
-      }
+    if (!taskId || !status) {
+      console.error("Message is missing required fields:", message);
+      return;
+    }
 
-      setData((prevData) => ({
-        ...prevData,
-        status,
-        problems,
-        currentStep,
-        progress,
-        timestamp,
-        loading: status !== "completed" && status !== "error",
-      }));
+    setData((prevData) => ({
+      ...prevData,
+      status,
+      problems,
+      currentStep,
+      progress,
+      timestamp,
+      loading: status !== "completed" && status !== "error",
+    }));
 
-      if (status === "completed" || status === "error") {
-        setIsLoading(false);
-      }
+    if (status === "completed" || status === "error") {
+      setIsLoading(false);
+    }
 
-      if (status === "error" && message.error) {
-        setError(`Analysis failed: ${message.error}`);
-      }
-    },
-    []
-  );
+    if (status === "error" && message.error) {
+      setError(`Analysis failed: ${message.error}`);
+    }
+  }, []);
 
   const handleAnalyze = async (e) => {
     if (e) e.preventDefault();
@@ -168,10 +166,10 @@ const AnalyzePage = () => {
           <div className={styles.iconContainer}>
             <div className={styles.globeIcon}></div>
           </div>
-          <h1 className={styles.title}>Spike AI Sales Demo</h1>
-          <p className={styles.description}>
+          <h1 className={styles.title}>Spike AI Admin Portal</h1>
+          {/* <p className={styles.description}>
             Analyze your website for conversion optimization opportunities
-          </p>
+          </p> */}
         </div>
 
         <div className={styles.content}>
@@ -189,7 +187,11 @@ const AnalyzePage = () => {
               disabled={isLoading || !wsConnected}
               className={styles.button}
             >
-              {isLoading ? "Analyzing..." : wsConnected ? "Analyze" : "Connecting..."}
+              {isLoading
+                ? "Analyzing..."
+                : wsConnected
+                ? "Analyze"
+                : "Connecting..."}
             </button>
           </form>
 
