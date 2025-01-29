@@ -90,7 +90,10 @@ const websiteIssues = {
 };
 
 const normalizeUrl = (url) => {
-  return url.replace(/^https?:\/\//, "").toLowerCase();
+  return url
+    .replace(/^https?:\/\//, "") // Remove protocol (http:// or https://)
+    .replace(/^www\./, "") // Remove "www." if it exists
+    .toLowerCase(); // Convert the URL to lowercase
 };
 
 // Helper function to validate if URL exists in our database
