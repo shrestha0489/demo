@@ -15,7 +15,7 @@ function ProblemModal({ problem, show, handleClose }) {
         <div>
           <h5>Problem Description</h5>
           <Markdown>{problem.problemDescription}</Markdown>
-          <h5>Problem Solution</h5>
+          <h5>Proposed Solution</h5>
           <Markdown>{problem.solutionText}</Markdown>
           <h5>Problem Impact</h5>
           <Markdown>{problem.impactText}</Markdown>
