@@ -154,8 +154,7 @@ const websiteIssues = {
     {
       problemDescription:
         "The Cybersecurity Overview page has seen a 40% traffic surge from the “Cybersecurity” Google Ads campaign, but time-on-page is just 12.8 seconds, indicating users leave quickly. The broad “Cybersecurity” ad campaign is likely bringing in mixed-intent traffic (CISOs, IT admins, business leaders) with no clear messaging for each. Additionally, the page lacks urgency triggers and interactive elements to keep visitors engaged.",
-      solutionText: `Solution (Adjusted for Screenshot Above the Fold)
- 1️⃣ Content & Messaging Optimization
+      solutionText: `1️⃣ Content & Messaging Optimization
 • Headline Update: Refine the title to “Cybersecurity Services – Protect, Detect, Respond” to establish clarity and actionability.
 • Personalized Sections: Modify subheaders to “For CISOs | For IT Admins | For Business Leaders” to ensure relevance at a glance.
 • Concise Pain Points: Instead of listing threats generically, reframe:
