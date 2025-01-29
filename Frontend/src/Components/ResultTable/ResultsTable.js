@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./ResultsTable.module.css";
+import ProblemModal from "./ProblemModal";
 
 const EmptyStateIcon = () => (
   <svg
@@ -40,7 +41,21 @@ const TableLoader = ({ progress, currentStep }) => (
   </div>
 );
 
+function trimText(sentence) {
+  let words = sentence.split(" ").length;
+  if (words > 10) {
+    return sentence.split(" ").slice(0, 10).join(" ") + "...";
+  }
+  return sentence;
+}
+
 const ResultsTable = ({ data }) => {
+  const [show, setShow] = React.useState(false);
+  const [problem, setProblem] = React.useState(null);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   if (!data) {
     return (
       <div className={styles.resultsTable}>
@@ -83,7 +98,13 @@ const ResultsTable = ({ data }) => {
               <tbody>
                 {problems && problems.length > 0 ? (
                   problems.map((problem, problemIndex) => (
-                    <tr key={problemIndex}>
+                    <tr
+                      key={problemIndex}
+                      onClick={() => {
+                        setProblem(problem);
+                        handleShow();
+                      }}
+                    >
                       {/* {problemIndex === 0 && (
                         <td className={styles.url} rowSpan={problems.length}>
                           <div className={styles.urlWrapper}>
@@ -93,17 +114,17 @@ const ResultsTable = ({ data }) => {
                       )} */}
                       <td>
                         <div className={styles.problemCell}>
-                          {problem.problemDescription}
+                          {trimText(problem.problemDescription)}
                         </div>
                       </td>
                       <td>
                         <div className={styles.solutionCell}>
-                          {problem.solutionText}
+                          {trimText(problem.solutionText)}
                         </div>
                       </td>
                       <td>
                         <div className={styles.impactCell}>
-                          {problem.impactText}
+                          {trimText(problem.impactText)}
                         </div>
                       </td>
                     </tr>
@@ -127,6 +148,7 @@ const ResultsTable = ({ data }) => {
           </div>
         )}
       </div>
+      <ProblemModal problem={problem} show={show} handleClose={handleClose} />
     </div>
   );
 };
