@@ -34,19 +34,20 @@ const websiteIssues = {
       solutionText: `1. Improve Visual Hierarchy & Readability
         • The “Discover HubSpot by GSI” section is text-heavy, with no clear visual emphasis on differentiators. We will break the section into distinct value blocks using icons, bullet points, and whitespace.
         • Add a stronger subheadline to immediately convey GSI’s expertise in HubSpot implementation.
-        2. Refine CTA Strategy
-        • The CTA “Get in Touch” is too generic. We will change it to something value-driven like:
-        ✅ “Get a Free HubSpot Strategy Session”
-        • Position an inline CTA below the key value points to capture user intent earlier.
-        3. Enhance Engagement with Trust Signals
-        • Add client testimonials or case study previews just below the “Why Choose HubSpot” section.
+        
+2. Refine CTA Strategy
+  • The CTA “Get in Touch” is too generic. We will change it to something value-driven like:
+  ✅ “Get a Free HubSpot Strategy Session”
+  • Position an inline CTA below the key value points to capture user intent earlier.
+        
+3. Enhance Engagement with Trust Signals
+  • Add client testimonials or case study previews just below the “Why Choose HubSpot” section.
+        
+  ##### Proposed Solution HTML
+        
 
-
-        Proposed Solution HTML
-        \`\`\`
         <div class="row-fluid-wrapper row-depth-1 row-number-1 dnd-section">
          <div class="row-fluid">
-
            <!-- Full-width text section -->
            <div class="span12 widget-span widget-type-cell dnd-column">
 
@@ -96,13 +97,6 @@ const websiteIssues = {
          </div>
         </div>
 
-
-
-
-
-
-
-
         <div class="row-fluid-wrapper row-depth-1 row-number-5 dnd-section">
          <div class="row-fluid">
            <div class="span6 widget-span widget-type-cell dnd-column">
@@ -151,7 +145,6 @@ const websiteIssues = {
 
          </div>
         </div><!--end row-wrapper -->
-        \`\`\`
         `,
       impactText: `Bounce Rate Reduction: Estimated 6-12% improvement due to more readable, scannable content.
       Higher Scroll Depth: Encouraging engagement with structured sections and testimonials.
@@ -162,21 +155,22 @@ const websiteIssues = {
       problemDescription:
         "The Cybersecurity Overview page has seen a 40% traffic surge from the “Cybersecurity” Google Ads campaign, but time-on-page is just 12.8 seconds, indicating users leave quickly. The broad “Cybersecurity” ad campaign is likely bringing in mixed-intent traffic (CISOs, IT admins, business leaders) with no clear messaging for each. Additionally, the page lacks urgency triggers and interactive elements to keep visitors engaged.",
       solutionText: `Solution (Adjusted for Screenshot Above the Fold)
-      1️⃣ Content & Messaging Optimization
-      • Headline Update: Refine the title to “Cybersecurity Services – Protect, Detect, Respond” to establish clarity and actionability.
-      • Personalized Sections: Modify subheaders to “For CISOs | For IT Admins | For Business Leaders” to ensure relevance at a glance.
-      • Concise Pain Points: Instead of listing threats generically, reframe:
-      • CISOs: “Ensure compliance and eliminate security blind spots.”
-      • IT Admins: “Real-time threat detection and automation for minimal downtime.”
-      • Business Leaders: “Reduce security risks while optimizing costs.”
-      2️⃣ Urgency & Time-Sensitive Offers
-      • CTA Enhancement: Replace “Talk to a GSI Cybersecurity Expert” with “Get a 30-Minute Free Security Audit” in the button.
-      • Limited-Time Offer Banner: Above the main text, add a “This Month Only: Free Vulnerability Scan for Consultation Requests” banner to create urgency.
-      3️⃣ Interactive Engagement Triggers
-      • Risk Score Assessment Tool: Embed a “See Your Risk Score in 60 Seconds” CTA next to the main CTA button. This is for a subsequent experiment.
+ 1️⃣ Content & Messaging Optimization
+• Headline Update: Refine the title to “Cybersecurity Services – Protect, Detect, Respond” to establish clarity and actionability.
+• Personalized Sections: Modify subheaders to “For CISOs | For IT Admins | For Business Leaders” to ensure relevance at a glance.
+• Concise Pain Points: Instead of listing threats generically, reframe:
+• CISOs: “Ensure compliance and eliminate security blind spots.”
+• IT Admins: “Real-time threat detection and automation for minimal downtime.”
+• Business Leaders: “Reduce security risks while optimizing costs.”
 
-      Proposed Solution HTML
-      \`\`\`
+ 2️⃣ Urgency & Time-Sensitive Offers
+• CTA Enhancement: Replace “Talk to a GSI Cybersecurity Expert” with “Get a 30-Minute Free Security Audit” in the button.
+• Limited-Time Offer Banner: Above the main text, add a “This Month Only: Free Vulnerability Scan for Consultation Requests” banner to create urgency.
+ 3️⃣ Interactive Engagement Triggers 
+• Risk Score Assessment Tool: Embed a “See Your Risk Score in 60 Seconds” CTA next to the main CTA button. This is for a subsequent experiment.
+
+##### Proposed Solution HTML
+      
       <div class="row-fluid-wrapper row-depth-1 row-number-1 dnd_area-row-0-vertical-alignment dnd-section">
       <div class="row-fluid ">
          <div class="span5 widget-span widget-type-cell cell_1687196825652-vertical-alignment dnd-column">
@@ -279,7 +273,6 @@ const websiteIssues = {
 
 
       </div>
-      \`\`\`
       `,
       impactText:
         "A **2X increase in session duration**, a 5-8% higher conversion rate, and a 15-20% drop in bounce rate by aligning content with user intent and optimizing for engagement. ",
@@ -288,15 +281,19 @@ const websiteIssues = {
       problemDescription:
         "The website’s case studies mostly feature NetSuite projects, with only one focusing on cybersecurity. This lack of diverse representation contributes to a significant drop-off during the consideration phase for cybersecurity services, particularly amidst ongoing paid campaigns. Currently, the conversion rate for the cybersecurity consideration journey is just 0.1%. By adding more targeted cybersecurity case studies, this rate could potentially increase by at least 3X, given the low starting point.",
       solutionText: `Develop and prominently display additional cybersecurity case studies on the website, focusing on relevant and impactful topics. These case studies should highlight successful cybersecurity projects, detailing the challenges faced, solutions implemented, and measurable outcomes achieved. Key topics to cover include:
-      1. Phishing Simulation and Training: Show how your services helped organizations implement phishing testing platforms to educate employees and mitigate phishing attack risks.
-      2. Emerging Cybersecurity Threats: Showcase your proactive approach in addressing new threats like supply chain software attacks and AI-driven cyberattacks, and demonstrate how your solutions have protected clients.
-      3. Zero Trust Security Implementations: Highlight successful deployments of Zero Trust models, showing how they enhanced clients’ security by ensuring strict verification for all users and devices.
-      4. Cybersecurity Assessments and Compliance: Illustrate how your comprehensive assessments helped organizations identify vulnerabilities, meet compliance requirements, and develop robust security strategies.
-      5. Incident Response and Ransomware Negotiations: Provide insights into your role in assisting clients during ransomware attacks, including negotiation and recovery strategies, to showcase your crisis management expertise.
+ 1. Phishing Simulation and Training: Show how your services helped organizations implement phishing testing platforms to educate employees and mitigate phishing attack risks.
+      
+ 2. Emerging Cybersecurity Threats: Showcase your proactive approach in addressing new threats like supply chain software attacks and AI-driven cyberattacks, and demonstrate how your solutions have protected clients.
+      
+ 3. Zero Trust Security Implementations: Highlight successful deployments of Zero Trust models, showing how they enhanced clients’ security by ensuring strict verification for all users and devices.
+      
+ 4. Cybersecurity Assessments and Compliance: Illustrate how your comprehensive assessments helped organizations identify vulnerabilities, meet compliance requirements, and develop robust security strategies.
+      
+ 5. Incident Response and Ransomware Negotiations: Provide insights into your role in assisting clients during ransomware attacks, including negotiation and recovery strategies, to showcase your crisis management expertise.
       Incorporate client testimonials to further add credibility and appeal. By creating a diverse set of case studies and strategically displaying them, you can engage visitors, demonstrate your cybersecurity expertise, and significantly increase conversion rates during the consideration phase.
 
 
-      Proposed Solution HTML
+##### Proposed Solution HTML
         Not Applicable. The changes require asset generation before changes are made to the website
 
 `,
@@ -309,7 +306,7 @@ const websiteIssues = {
       problemDescription:
         "Average time on site has dropped from 6 minutes to 45 seconds, signaling a decline in engagement. A major contributing factor is the disappearance of high-value repeat users who originally came from Software Advice, a referral source that is now inactive. This cohort had a higher conversion rate and longer session duration compared to other traffic sources, but their absence has gone unnoticed due to standard attribution methods missing the impact of lost referral streams.",
       solutionText: `Relaunch referral campaigns targeting the same high-intent cohort through alternative review platforms and partner networks. Identify similar third-party referral sources (e.g., G2, Capterra, TrustRadius) and run tailored acquisition campaigns to recapture the lost organic funnel. Brainstorm recommended to finalize campaign
-      Proposed Solution HTML
+##### Proposed Solution HTML
        Not Applicable. The changes require executive brainstorming.
 `,
       impactText: `Re-engaging this high-value cohort can restore lost engagement and conversions, significantly increasing time-on-site and lead quality while preventing further audience attrition.
@@ -318,24 +315,28 @@ const websiteIssues = {
     {
       problemDescription: `Misalignment Between Target Persona and Conversion Flow. The highest-converting users are CIOs, yet the website experience primarily caters to developers opting for free trials. The current flow prioritizes a self-serve onboarding path, which attracts developers but does not align with how CIOs evaluate and purchase reliability automation solutions. As a result, while trial sign-ups remain steady, enterprise purchase conversions remain low, leading to inefficient monetization.`,
       solutionText: `1. Messaging Shift to CIO Pain Points
-      • The headline currently focuses on uptime (developer concern).
-      • Modify it to reflect business and operational impact, which resonates with CIOs.
-      ✅ Before: Be in Control of Uptime
-      ✅ After: Ensure Business Continuity with AI-Driven Reliability
-      2. CTA Prioritization for Enterprise Decision-Makers
-      • “Start for Free” is attractive for developers but dilutes enterprise intent.
-      • Swap primary CTA to “Request a Custom Reliability Audit”, positioning Squadcast as a strategic partner.
-      ✅ Before: Start For Free Now | Schedule a Demo
-      ✅ After: Request a Custom Reliability Audit | See How Enterprises Use Squadcast
-      3. G2 Awards Section: Emphasizing Enterprise Success
-      • The G2 awards already highlight enterprise but aren’t effectively leveraged.
-      • Add a subheadline connecting the awards to enterprise-scale reliability management.
-      ✅ Before: Leading with Innovation: Pioneering Unified Incident Management
-      ✅ After: Trusted by Enterprise IT Teams for Unmatched Uptime & Security
+• The headline currently focuses on uptime (developer concern).
+• Modify it to reflect business and operational impact, which resonates with CIOs.
+      
+✅ Before: Be in Control of Uptime
+✅ After: Ensure Business Continuity with AI-Driven Reliability
+      
+ 2. CTA Prioritization for Enterprise Decision-Makers
+• “Start for Free” is attractive for developers but dilutes enterprise intent.
+• Swap primary CTA to “Request a Custom Reliability Audit”, positioning Squadcast as a strategic partner.
+      
+✅ Before: Start For Free Now | Schedule a Demo
+✅ After: Request a Custom Reliability Audit | See How Enterprises Use Squadcast
+      
+ 3. G2 Awards Section: Emphasizing Enterprise Success
+• The G2 awards already highlight enterprise but aren’t effectively leveraged.
+• Add a subheadline connecting the awards to enterprise-scale reliability management.
+      
+✅ Before: Leading with Innovation: Pioneering Unified Incident Management
+✅ After: Trusted by Enterprise IT Teams for Unmatched Uptime & Security
 
 
-      Proposed Solution HTML
-      \`\`\`
+##### Proposed Solution HTML
       <div class="columns-386 innerpages audit v w-row">
          <div class="w-col w-col-6 w-col-stack">
            <div class="div-block-644 _600">
@@ -388,7 +389,6 @@ const websiteIssues = {
            </div>
          </div>
        </div>
-       \`\`\`
       `,
       impactText: `By repositioning messaging & CTA toward CIOs, demo requests are expected to increase by 30-40%, leading to higher contract-value conversions.
         Reducing developer sign-ups that never convert improves marketing efficiency, potentially reducing CAC by 15-20% over 6 months.
@@ -399,17 +399,21 @@ const websiteIssues = {
       problemDescription: `Pricing Page Friction Leading to Drop-offs in Decision Journey. Squadcast’s Pricing page has a 78% bounce rate, with CIOs and enterprise buyers failing to engage. The page prioritizes developer-focused feature breakdowns, causing decision paralysis in the decision phase. Lack of ROI framing, persona-driven clarity, and guided CTAs prevents high-intent visitors from converting.`,
       solutionText: `1. Reframe the Page Header for CIOs & Decision-Makers
         • Change “Reliability. At any cost.” to “Reliability That Scales With Your Business” or “Enterprise-Grade Reliability, Built for Growth” to emphasize value over cost.
-        2. Prioritize Enterprise-Driven Messaging
-        • Add a subheader above the pricing table:
-        “For Enterprise Teams: Custom SLAs, Compliance Support, and Dedicated Security Features Available.”
-        • Highlight benefits like security, compliance, and cost savings in Enterprise Plan.
-        3. Introduce ROI Framing & Feature Comparison
-        • Add “Total Cost of Downtime Calculator” for buyers to assess Squadcast’s cost-effectiveness.
-        • Incorporate a table or bullet list comparing Enterprise vs. Premium vs. Pro, focusing on how Enterprise saves time and money for CIOs.
-        4. Improve Call-to-Action (CTA) Strategy
-        • Change “Start Free Trial” to “Try Squadcast Risk-Free” (for Pro & Premium) and
-        “Get a Custom Enterprise Plan” (instead of “Contact Us”).
-        Proposed Solution HTML
+        
+ 2. Prioritize Enterprise-Driven Messaging
+• Add a subheader above the pricing table:
+“For Enterprise Teams: Custom SLAs, Compliance Support, and Dedicated Security Features Available.”
+• Highlight benefits like security, compliance, and cost savings in Enterprise Plan.
+
+ 3. Introduce ROI Framing & Feature Comparison
+• Add “Total Cost of Downtime Calculator” for buyers to assess Squadcast’s cost-effectiveness.
+• Incorporate a table or bullet list comparing Enterprise vs. Premium vs. Pro, focusing on how Enterprise saves time and money for CIOs.
+
+ 4. Improve Call-to-Action (CTA) Strategy
+• Change “Start Free Trial” to “Try Squadcast Risk-Free” (for Pro & Premium) and
+“Get a Custom Enterprise Plan” (instead of “Contact Us”).
+        
+##### Proposed Solution HTML
         Pricing and pricing page changes are generated only after explicit approval.
 `,
       impactText: `Reduces bounce rate by 15-20%, improving decision journey continuity.
@@ -417,12 +421,12 @@ const websiteIssues = {
       Boosts paid conversion rates by 2-3X, as clearer value differentiation encourages CIOs to take action faster.`,
     },
   ],
-  "flawless.com": [
+  "sonatype.com": [
     {
       problemDescription: `Drop-off in Engagement for Mid-Funnel Visitors. Despite strong traffic, engagement on the Repository Firewall page is weak, with an average time on page of 41 seconds (well below the 2-minute benchmark). 72% of visitors never scroll past the first fold, and CTA clicks are under 0.6%. The page lacks interactive elements to guide mid-funnel users toward deeper exploration, leading to premature exits.`,
       solutionText: `Proposed Solution (Text Explanation)
       Introduce an interactive ROI calculator or a “Test Your Risk Exposure” tool to engage mid-funnel users. Add a personalized industry selector at the top of the page, allowing users to navigate content most relevant to their needs.
-      Proposed Solution HTML
+##### Proposed Solution HTML
       Not part of PRO plan.
 `,
       impactText: `Increasing mid-funnel engagement by just 30 seconds can double the likelihood of demo sign-ups, leading to a potential 15-20% uplift in conversion rates.`,
@@ -431,7 +435,7 @@ const websiteIssues = {
       problemDescription: `Low Conversion from Organic Visitors Due to Competitive Overlap. Organic search brings 63% of traffic, but demo conversion from them is below 0.4%. Many visitors are looking for general security scanning tools, not repository protection, due to overlapping keyword rankings with competitors like Snyk and JFrog. The current messaging doesn’t differentiate real-time policy enforcement as a unique advantage.
       The existing messaging focuses on “blocking open-source risk,” which overlaps with broader SCA (Software Composition Analysis) solutions. However, Repository Firewall is differentiated by real-time policy enforcement at the point of entry, a feature not emphasized enough to attract the right audience.`,
       solutionText: `Refine messaging to clearly distinguish Repository Firewall from traditional scanning tools. Add a comparison table above the fold that contrasts “Real-time Prevention” vs. “Post-Scan Detection”, reinforcing Sonatype’s unique value proposition.
-        Proposed Solution HTML
+##### Proposed Solution HTML
         Not part of PRO plan.
 `,
       impactText: `A clearer product-positioning strategy can reduce bounce rates by 15-20%, improve demo request rates, and increase qualified inbound leads by 30% over 3-6 months.`,
@@ -440,9 +444,10 @@ const websiteIssues = {
       problemDescription: `Security Decision-Makers Not Engaging with the Page. Based on IP tracking and user behavior analytics, only 14% of visitors are security leaders (CISOs, Security Architects, Compliance Teams)—the core decision-makers for purchasing Repository Firewall. In contrast, 58% of visitors are developers, who may be interested but lack purchasing authority. The “Get a Demo” CTA competes with free content downloads, leading to low intent signals.
       The current page layout does not prioritize executive buyers. The messaging and CTAs are developer-focused, lacking high-level security, governance, and compliance narratives that CISOs prioritize.`,
       solutionText: `Implement a split-path CTA:
-        • Developers see “Test in Your Environment” (hands-on product sandbox).
-        • Security leaders see “CISO Briefing: See Firewall in Action” (live walkthrough focused on compliance & risk).
-        Proposed Solution HTML
+• Developers see “Test in Your Environment” (hands-on product sandbox).
+• Security leaders see “CISO Briefing: See Firewall in Action” (live walkthrough focused on compliance & risk).
+        
+##### Proposed Solution HTML
         Not part of PRO plan.
 `,
       impactText: `Increasing security leadership engagement by even 10% can triple the pipeline impact since CISOs have 5X higher likelihood to convert to high-ACV deals than developers.`,
