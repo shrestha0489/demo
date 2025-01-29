@@ -166,7 +166,7 @@ const AnalyzePage = () => {
           <div className={styles.iconContainer}>
             <div className={styles.globeIcon}></div>
           </div>
-          <h1 className={styles.title}>Spike AI Admin Portal</h1>
+          <h1 className={styles.title}>Spike AI Backend Portal</h1>
           {/* <p className={styles.description}>
             Analyze your website for conversion optimization opportunities
           </p> */}
