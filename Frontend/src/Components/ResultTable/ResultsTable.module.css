@@ -170,7 +170,8 @@
 
 /* Hover effect for rows */
 .table tbody tr:hover {
-  background-color: #f8f9fa;
+  background-color: white;
+  cursor: pointer;
 }
 
 /* Responsive adjustments */
