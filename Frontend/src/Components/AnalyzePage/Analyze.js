@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import api from "../../API";
 import ResultsTable from "../ResultTable/ResultsTable";
 import styles from "./Analyze.module.css";
+import Logout from "./Logout";
 
 const CONFIG = {
   WEBSOCKET_URL:
@@ -161,6 +162,9 @@ const AnalyzePage = () => {
 
   return (
     <div className={styles.container}>
+      <div className={styles.logoutWrapper}>
+        <Logout />
+      </div>
       <div className={styles.card}>
         <div className={styles.header}>
           <div className={styles.iconContainer}>
