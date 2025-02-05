@@ -1,5 +1,3 @@
-//lambda for default route for websocket, for hanldling all the incoming client actions over websocket apart from connection and disconnection requests
-// used to save info, like which user has requested for which url for processing, so that when the results are ready, we know whom to send it
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 
@@ -14,12 +12,13 @@ export const handler = async (event) => {
   console.log("Handling connectionId:", connectionId, "taskId:", taskId);
 
   try {
+    // Use PutCommand to ensure taskId is directly associated with the connectionId
     await dynamoDb.send(
       new PutCommand({
-        TableName: "WebSocketConnections",
+        TableName: "demoWebsiteAnalysisResults",
         Item: {
-          connectionId, 
-          taskId,        
+          taskId, // Set the connectionId as the key
+          connectionId,        // Set the taskId to associate with the connectionId
         },
       })
     );
