@@ -127,7 +127,7 @@ const AnalyzePage = () => {
     setIsLoading(true);
 
     try {
-      const response = await api.post("/analyze", { url: trimmedUrl });
+      const response = await api.post("/", { url: trimmedUrl });
       const taskId = response.data.taskId;
 
       setData({
