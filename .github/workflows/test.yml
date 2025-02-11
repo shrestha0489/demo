@@ -18,14 +18,26 @@ jobs:
         with:
           node-version: "18.x"
 
-      - name: Installing dependencies
+      - name: Installing dependencies in Frontend
+        run: npm install
+        working-directory: ./Frontend
+
+      - name: Running linters in Frontend
+        run: npm run lint
+        working-directory: ./Frontend
+
+      - name: Formatting code in Frontend
+        run: npm run prettier
+        working-directory: ./Frontend
+
+      - name: Installing dependencies in Backend
         run: npm install
         working-directory: ./Backend
 
-      - name: Running linters
+      - name: Running linters in Backend
         run: npm run lint
         working-directory: ./Backend
 
-      - name: Formatting code
+      - name: Formatting code in Backend
         run: npm run prettier
         working-directory: ./Backend
