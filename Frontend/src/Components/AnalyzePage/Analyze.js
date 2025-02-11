@@ -62,11 +62,11 @@ const AnalyzePage = () => {
           JSON.stringify({
             action: "subscribe",
             taskId: taskId,
-          })
+          }),
         );
       }
     },
-    [wsConnection]
+    [wsConnection],
   );
 
   const handleWebSocketMessage = useCallback((message) => {
@@ -194,8 +194,8 @@ const AnalyzePage = () => {
               {isLoading
                 ? "Analyzing..."
                 : wsConnected
-                ? "Analyze"
-                : "Connecting..."}
+                  ? "Analyze"
+                  : "Connecting..."}
             </button>
           </form>
 

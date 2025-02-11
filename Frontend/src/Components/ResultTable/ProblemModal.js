@@ -1,3 +1,5 @@
+import React from "react";
+import PropTypes from "prop-types"; // Import PropTypes
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import styles from "./ProblemModal.module.css";
@@ -6,6 +8,7 @@ import Markdown from "react-markdown";
 function ProblemModal({ problem, show, handleClose }) {
   if (!problem) return null;
   console.log("PROBLEM ", problem);
+
   return (
     <Modal show={show} onHide={handleClose} dialogClassName={styles.modal60w}>
       <Modal.Header closeButton>
@@ -29,5 +32,16 @@ function ProblemModal({ problem, show, handleClose }) {
     </Modal>
   );
 }
+
+// Add PropTypes validation
+ProblemModal.propTypes = {
+  problem: PropTypes.shape({
+    problemDescription: PropTypes.string,
+    solutionText: PropTypes.string,
+    impactText: PropTypes.string,
+  }),
+  show: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
+};
 
 export default ProblemModal;
