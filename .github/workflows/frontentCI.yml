@@ -8,16 +8,20 @@ jobs:
     steps:
       - name: Checking out code
         uses: actions/checkout@v4
+
       - name: Installing Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "16.x"
+
       - name: Installing dependencies
         run: npm install
+        working-directory: ./Frontend
+
       - name: Building project
-        run: npm build
-        env:
-          CI: ""
+        run: npm run build
+        working-directory: ./Frontend
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -26,4 +30,4 @@ jobs:
           aws-region: us-east-1
 
       - name: Deploy to S3 bucket
-        run: aws s3 sync ./build/ s3://demo-dashboard-spike --delete
+        run: aws s3 sync ./Frontend/build/ s3://demo-dashboard-spike --delete

@@ -8,21 +8,29 @@ jobs:
     steps:
       - name: Checking out code
         uses: actions/checkout@v4
+
       - name: Installing Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
+
       - name: Installing dependencies
         run: npm install
+        working-directory: ./Backend
+
       - name: Zip the code
         run: zip -r demoWebsiteAnalysis-lambda.zip .
+        working-directory: ./Backend
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+
       - name: Deploy to S3 bucket
         run: aws s3 cp demoWebsiteAnalysis-lambda.zip s3://demo-dashboard-spike
+
       - name: Deploy to demoWebsiteAnalysisResults
         run: aws lambda update-function-code --function-name demoWebsiteAnalysisResults --s3-bucket demo-dashboard-spike --s3-key demoWebsiteAnalysis-lambda.zip
