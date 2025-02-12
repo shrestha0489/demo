@@ -27,7 +27,7 @@ async function createTask(url, taskId) {
   return dynamoDb.send(new PutCommand(params));
 }
 
-export const analyze = async (url) => {
+const analyze = async (url) => {
   try {
     if (!url) {
       return {
@@ -77,3 +77,6 @@ export const analyze = async (url) => {
     };
   }
 };
+
+
+export default analyze;

@@ -1,13 +1,24 @@
-import { analyze } from "./Controllers/analyze";
+import analyze from "./Controllers/analyze";
 
 export const handler = async (event) => {
   let body;
-  if (event.body) {
-    body = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
-  } else {
-    body = event;
+  try {
+    body = event.body ? (typeof event.body === "string" ? JSON.parse(event.body) : event.body) : event;
+  } catch (error) {
+    console.log(error);
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: "Invalid JSON body" }),
+    };
   }
 
   const { url } = body;
+  if (!url) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: "URL is required" }),
+    };
+  }
+
   return analyze(url);
 };
