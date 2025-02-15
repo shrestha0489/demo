@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types"; // Import PropTypes
 import styles from "./ResultsTable.module.css";
 import ProblemModal from "./ProblemModal";
 
@@ -80,7 +81,12 @@ const ResultsTable = ({ data }) => {
       <div className={styles.header}>
         <h2 className={styles.title}>Analysis Results</h2>
       </div>
-      <a href={url} target="_blank" className={styles.urlText}>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.urlText}
+      >
         {url}
       </a>
       <div className={styles.emptyState}>
@@ -91,7 +97,6 @@ const ResultsTable = ({ data }) => {
             <table className={styles.table}>
               <thead>
                 <tr>
-                  {/* <th className={styles.urlColumn}>URL</th> */}
                   <th>Problem Description</th>
                   <th>Solution</th>
                   <th>Impact</th>
@@ -107,13 +112,6 @@ const ResultsTable = ({ data }) => {
                         handleShow();
                       }}
                     >
-                      {/* {problemIndex === 0 && (
-                        <td className={styles.url} rowSpan={problems.length}>
-                          <div className={styles.urlWrapper}>
-                            <span className={styles.urlText}>{url}</span>
-                          </div>
-                        </td>
-                      )} */}
                       <td>
                         <div className={styles.problemCell}>
                           {trimText(problem.problemDescription)}
@@ -153,6 +151,22 @@ const ResultsTable = ({ data }) => {
       <ProblemModal problem={problem} show={show} handleClose={handleClose} />
     </div>
   );
+};
+
+// Prop validation
+ResultsTable.propTypes = {
+  data: PropTypes.shape({
+    loading: PropTypes.bool,
+    problems: PropTypes.array,
+    progress: PropTypes.number,
+    currentStep: PropTypes.string,
+    url: PropTypes.string,
+  }),
+};
+
+TableLoader.propTypes = {
+  progress: PropTypes.number.isRequired,
+  currentStep: PropTypes.string,
 };
 
 export default ResultsTable;

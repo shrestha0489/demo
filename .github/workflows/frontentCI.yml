@@ -1,0 +1,33 @@
+name: demoWebsiteAnalysis-frontend-deployment-prod
+on:
+  push:
+    branches: [main]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking out code
+        uses: actions/checkout@v4
+
+      - name: Installing Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+
+      - name: Installing dependencies
+        run: npm install
+        working-directory: ./Frontend
+
+      - name: Building project
+        run: npm run build
+        working-directory: ./Frontend
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy to S3 bucket
+        run: aws s3 sync ./Frontend/build/ s3://demo-dashboard-spike --delete

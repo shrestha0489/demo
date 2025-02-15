@@ -5,10 +5,12 @@
   "license": "ISC",
   "author": "",
   "type": "commonjs",
-  "main": "server.js",
+  "main": "index.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server"
+    "dev": "nodemon index.mjs",
+    "lint": "eslint .",
+    "prettier": "prettier --check ."
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.726.1",
@@ -17,8 +19,15 @@
     "aws-sdk": "^2.1692.0",
     "backend": "file:",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "nodemon": "^3.1.9",
     "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.20.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-n": "^17.15.1",
+    "prettier": "^3.5.0"
   }
 }

@@ -39,5 +39,5 @@ root.render(
     <Authenticator.Provider>
       <RouterProvider router={router} />
     </Authenticator.Provider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

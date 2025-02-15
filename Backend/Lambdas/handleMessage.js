@@ -18,12 +18,14 @@ export const handler = async (event) => {
         TableName: "demoWebsiteAnalysisResults",
         Item: {
           taskId, // Set the connectionId as the key
-          connectionId,        // Set the taskId to associate with the connectionId
+          connectionId, // Set the taskId to associate with the connectionId
         },
-      })
+      }),
     );
 
-    console.log(`Successfully updated taskId for connectionId: ${connectionId}`);
+    console.log(
+      `Successfully updated taskId for connectionId: ${connectionId}`,
+    );
     return {
       statusCode: 200,
       body: JSON.stringify({ message: "Task ID updated successfully." }),

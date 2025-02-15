@@ -1,11 +1,21 @@
-const AWS = require("aws-sdk");
-AWS.config.update({ region: "us-east-1" });
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const lambda = new AWS.Lambda(); // Lambda client
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
+import crypto from "crypto";
+import dotenv from "dotenv";
+dotenv.config();
+
+const client = new DynamoDBClient({});
+const dynamoDb = DynamoDBDocumentClient.from(client);
+const lambda = new LambdaClient({});
+
+function generateUUID() {
+  return crypto.randomUUID();
+}
 
 async function createTask(url, taskId) {
   const params = {
-    TableName: "demoWebsiteAnalysisResults",
+    TableName: process.env.ANALYSIS_LAMBDA || "demoWebsiteAnalysisResults",
     Item: {
       taskId,
       url,
@@ -14,35 +24,59 @@ async function createTask(url, taskId) {
     },
   };
 
-  return dynamoDb.put(params).promise();
+  return dynamoDb.send(new PutCommand(params));
 }
 
-const analyze = async (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ message: "URL is required" });
-  }
-
-  const taskId = `task-${Date.now()}`;
-  await createTask(url, taskId);
-
-  // Lambda invocation parameters
-  const lambdaParams = {
-    FunctionName: "demoWebsiteAnalysisResults", // Replace with your Lambda function name
-    InvocationType: "Event", // Asynchronous invocation (Event)
-    Payload: JSON.stringify({ url, taskId }), // Pass URL and taskId to the Lambda
-  };
-
-  // Trigger the Lambda function asynchronously
+const analyze = async (url) => {
   try {
-    await lambda.invoke(lambdaParams).promise();
-    console.log(`Lambda function triggered for task: ${taskId}`);
-  } catch (error) {
-    console.error(`Error invoking Lambda function: ${error.message}`);
-  }
+    if (!url) {
+      return {
+        statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({ message: "URL is required" }),
+      };
+    }
 
-  res.status(200).json({ taskId });
+    const taskId = generateUUID();
+    await createTask(url, taskId);
+
+    // Lambda invocation parameters
+    const lambdaParams = {
+      FunctionName: "demoWebsiteAnalysisFunction",
+      InvocationType: "Event",
+      Payload: JSON.stringify({ url, taskId }),
+    };
+
+    // Trigger the Lambda function asynchronously
+    await lambda.send(new InvokeCommand(lambdaParams));
+    console.log(`Lambda function triggered for task: ${taskId}`);
+
+    return {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({ taskId }),
+    };
+  } catch (error) {
+    console.error("Error:", error);
+    return {
+      statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({
+        message: "Internal server error",
+        error: error.message,
+      }),
+    };
+  }
 };
 
-module.exports = analyze;
+
+export default analyze;
