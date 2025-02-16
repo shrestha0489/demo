@@ -33,4 +33,4 @@ jobs:
         run: aws s3 cp ./Backend/demoWebsiteAnalysis-lambda.zip s3://demo-dashboard-spike
 
       - name: Deploy to demoWebsiteAnalysisResults
-        run: aws lambda update-function-code --function-name demoWebsiteAnalysisResults --s3-bucket demo-dashboard-spike --s3-key demoWebsiteAnalysis-lambda.zip
+        run: aws lambda update-function-code --function-name demoInitiateAnalysis --s3-bucket demo-dashboard-spike --s3-key demoWebsiteAnalysis-lambda.zip
