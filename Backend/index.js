@@ -1,4 +1,4 @@
-import analyze from "./Controllers/analyze";
+import analyze from "./Controllers/analyze.js";
 
 export const handler = async (event) => {
   let body;
