@@ -17,7 +17,7 @@ const CONFIG = {
   MAX_RETRIES: parseInt(process.env.MAX_RETRIES || "3"),
   RETRY_DELAY: parseInt(process.env.RETRY_DELAY || "1000"),
   CONNECTIONS_TABLE:
-    process.env.CONNECTIONS_TABLE || "demoWebsocketConnections",
+    process.env.CONNECTIONS_TABLE || "demoWebsiteAnalysisResults",
   ANALYSIS_TABLE: process.env.ANALYSIS_TABLE || "demoWebsiteAnalysisResults",
 };
 
