@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL:
-    "https://qzgipe7jablms5edpu2jyw76xu0qlxmo.lambda-url.us-east-1.on.aws", // Replace with your base URL
+    "https://73v6qtopzxmsgoq6oupmvhqale0iocxp.lambda-url.us-east-1.on.aws"
 });
 
 export default api;
