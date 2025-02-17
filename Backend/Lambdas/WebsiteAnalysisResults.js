@@ -475,33 +475,65 @@ const delay = (attempt) => {
 
 // New function to find WebSocket connection for a taskId with exponential backoff
 async function findConnectionIdForTask(taskId) {
-  for (let attempt = 0; attempt < CONFIG.MAX_RETRIES; attempt++) {
+  // Configuration for retry strategy
+  const initialDelay = 100; // Start with 100ms delay
+  const maxDelay = 5000; // Maximum delay of 5 seconds
+  const maxAttempts = CONFIG.MAX_RETRIES || 3;
+  let currentDelay = initialDelay;
+
+  // Add detailed logging for debugging
+  console.log(`Starting to look for connectionId for taskId: ${taskId}`);
+  console.log(`Will attempt ${maxAttempts} times with delays between ${initialDelay}ms and ${maxDelay}ms`);
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
     try {
       const params = {
         TableName: CONFIG.CONNECTIONS_TABLE,
         KeyConditionExpression: "taskId = :taskId",
         ExpressionAttributeValues: { ":taskId": taskId },
+        ConsistentRead: true // Enable strongly consistent reads
       };
 
+      console.log(`Attempt ${attempt + 1}/${maxAttempts} to find connectionId...`);
       const result = await dynamoDb.send(new QueryCommand(params));
-      if (result.Items && result.Items.length > 0) {
-        return result.Items[0].connectionId;
+
+      if (result.Items && result.Items.length > 0 && result.Items[0].connectionId !== undefined) {
+        const connectionId = result.Items[0].connectionId;
+        console.log(`Successfully found connectionId: ${connectionId} for taskId: ${taskId}`);
+        return connectionId;
       }
 
-      if (attempt < CONFIG.MAX_RETRIES - 1) {
-        await delay(attempt);
+      // No connection found, prepare for retry
+      console.log(`No connection found for taskId ${taskId} on attempt ${attempt + 1}`);
+
+      if (attempt < maxAttempts - 1) {
+        // Calculate next delay with exponential backoff and jitter
+        currentDelay = Math.min(currentDelay * 2, maxDelay);
+        const jitter = Math.random() * 0.3 * currentDelay; // Add up to 30% random jitter
+        const totalDelay = currentDelay + jitter;
+
+        console.log(`Waiting ${Math.round(totalDelay)}ms before next attempt...`);
+        await new Promise(resolve => setTimeout(resolve, totalDelay));
       }
     } catch (error) {
       console.error(
-        `Error finding connectionId for taskId (attempt ${attempt + 1}):`,
-        error,
+        `Error querying DynamoDB for taskId ${taskId} (attempt ${attempt + 1}):`,
+        error
       );
-      if (attempt < CONFIG.MAX_RETRIES - 1) {
-        await delay(attempt);
+
+      if (attempt < maxAttempts - 1) {
+        currentDelay = Math.min(currentDelay * 2, maxDelay);
+        const jitter = Math.random() * 0.3 * currentDelay;
+        const totalDelay = currentDelay + jitter;
+
+        console.log(`Error occurred, waiting ${Math.round(totalDelay)}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, totalDelay));
       }
     }
   }
-  return null;
+
+  console.log(`Failed to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`);
+  throw new Error(`Unable to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`);
 }
 
 // Event parsing function with enhanced validation
