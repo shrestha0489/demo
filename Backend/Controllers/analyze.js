@@ -15,7 +15,7 @@ function generateUUID() {
 
 async function createTask(url, taskId) {
   const params = {
-    TableName: process.env.ANALYSIS_LAMBDA || "demoWebsiteAnalysisResults",
+    TableName: process.env.RESULT_TABLE || "demoWebsiteAnalysisResults",
     Item: {
       taskId,
       url,
@@ -32,10 +32,6 @@ const analyze = async (url) => {
     if (!url) {
       return {
         statusCode: 400,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
         body: JSON.stringify({ message: "URL is required" }),
       };
     }
@@ -56,20 +52,12 @@ const analyze = async (url) => {
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
       body: JSON.stringify({ taskId }),
     };
   } catch (error) {
     console.error("Error:", error);
     return {
       statusCode: 500,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
       body: JSON.stringify({
         message: "Internal server error",
         error: error.message,
