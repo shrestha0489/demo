@@ -452,6 +452,214 @@ const websiteIssues = {
       impactText: `Increasing security leadership engagement by even 10% can triple the pipeline impact since CISOs have 5X higher likelihood to convert to high-ACV deals than developers.`,
     },
   ],
+  "unicommerce.com": [
+    {
+      problemDescription: `Only 0.4% of homepage visitors submit the form, with a similarly low hero CTA click-through (81 out of 166,920 total visits in the last 90 days → ~0.05%). Even the top navigation “Demo” link sees just 107 clicks (0.06%). Meanwhile:
+• 7% scroll to the bottom → 93% never see your deeper content.
+• Average engagement time on the homepage is 33 seconds (20 seconds for landing page sessions), suggesting most visitors don’t stay long enough to explore or understand the offering.
+These numbers imply that the hero section and above-the-fold content aren’t resonating with visitors quickly enough to encourage meaningful action. Despite the low friction of a simple CTA click, users either don’t notice it, aren’t clear on the next step, or don’t believe the solution addresses their immediate needs.`,
+      solutionText: `Hero Section Overhaul
+1. Rework the Hero Headline & Sub-Headline
+• Current: “Simplify E-commerce, Accelerate Growth, Reduce Costs” is broad and doesn’t explicitly hook new visitors.
+• Recommended: Showcase specifics + social proof in the first 5 seconds:
+• “The #1 E-commerce Platform Processing 20–25% of India’s Dropship Shipments”
+• “Streamline Your Online Operations in One Dashboard”
+A more direct statement of what you do and why it matters sets the tone for further exploration.
+2. Streamline CTA Choices
+• Recommended: Offer one main, low-commitment CTA—for example, “See How It Works” that scrolls down to the Product section below—and place the “Talk to an Advisor” button in a secondary style or slightly to the side. This helps you capture more curious, top-of-funnel clicks before asking them to commit.
+3. Incorporate High-Converting Resource
+• Since your blog post on “How to Sell on Myntra” converts at 3.73%, create a subtle “Featured Resource” link or banner near the hero. For example:
+• “Not Sure Where to Start? Read Our Guide: ‘How to Sell on Myntra’”
+• This provides a clear next step for early-stage visitors who may not be ready to talk to sales but want actionable tips.
+4. Showcase Trust Indicators Higher
+• Move or replicate 1-2 major brand logos, star ratings, or certification badges into the hero area. This reduces skepticism for first-time visitors and aligns with the quick engagement window (33 seconds or less).
+#### Proposed Solution <html code>
+Part 1
+
+<div id="banner-heading" class="et_pb_row et_pb_row_0 pa-inline-buttons et_pb_gutters2 et-last-child">
+  <!-- Left Column: Headline, CTAs, and Featured Resource -->
+  <div class="et_pb_column et_pb_column_1_2 et_pb_column_0 et_pb_css_mix_blend_mode_passthrough">
+    
+    <!-- Headline & Sub-Headline -->
+    <div class="et_pb_module et_pb_text et_pb_text_1 et_pb_text_align_left et_pb_text_align_center-phone et_pb_bg_layout_light">
+      <div class="et_pb_text_inner">
+        <h1 style="line-height: 1.2em;">
+          <span style="color:#ACC90D;">The #1 E-commerce Ops Platform</span><br>
+          <span style="color:#fff;">Processing 20–25% of India’s Dropship Shipments</span>
+        </h1>
+        <p style="padding: 10px 0 0 0; color:#ffffff; line-height:21px;">
+          Streamline your online operations on one dashboard—from order processing to real-time analytics.
+        </p>
+      </div>
+    </div>
+
+    <!-- CTA Container: "See How It Works" + Phone Field + "Get a Demo" -->
+    <div class="hero-cta-group" style="
+           display:inline-flex;
+           align-items:stretch;
+           flex-wrap:nowrap;
+           gap:10px;
+           height:50px;    /* Fixed height for consistent alignment */
+         ">
+
+      <!-- "See How It Works" Button -->
+      <a href="#how-it-works-section" style="
+           display:inline-block;
+           padding:15px 25px;
+           background:#fff;
+           color:#000;
+           font-weight:bold;
+           text-decoration:none;
+           border-radius:5px;
+           white-space:nowrap;  /* Prevents text from wrapping */
+           height:100%;
+           line-height:20px;    /* Adjust for vertical centering */
+           box-sizing:border-box;
+         ">
+        See How It Works
+      </a>
+
+      <!-- Contact Form 7 "Get a Demo" -->
+      <form action="/#wpcf7-f416660-p406105-o1" method="post" class="wpcf7-form init" aria-label="Contact form" novalidate="" data-faitracker-form-bind="true" data-faitracker-form-id="form-2" style="
+              display:inline-flex;
+              align-items:center;
+              margin:0;
+              padding:0;
+              flex-wrap:nowrap;
+              border:0px solid #ACC90D;
+              border-radius:5px;
+              overflow:hidden;
+              height:100%;       /* Matches the container’s 50px */
+              box-sizing:border-box;
+            ">
+
+        <!-- Hidden CF7 Fields -->
+        <div style="display:none;">
+          <input type="hidden" name="_wpcf7" value="416660">
+          <input type="hidden" name="_wpcf7_version" value="6.0.3">
+          <input type="hidden" name="_wpcf7_locale" value="en_US">
+          <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f416660-p406105-o1">
+          <input type="hidden" name="_wpcf7_container_post" value="406105">
+          <!-- Add additional hidden fields as needed -->
+        </div>
+
+        <!-- Phone Field Wrapper -->
+        <div style="
+          display:inline-flex;
+          align-items:center;
+          background:#fff;
+          border-right:2px solid #ACC90D;
+          padding:0 10px;
+          height:100%;
+          box-sizing:border-box;
+        ">
+          <div class="iti iti--allow-dropdown iti--separate-dial-code" style="display:flex; align-items:center; margin:0; border:none; height:100%;">
+            <!-- Dial code/flag container -->
+            <div class="iti__flag-container">
+              <div class="iti__selected-flag" role="combobox" aria-owns="country-listbox" tabindex="0">
+                <div class="iti__flag iti__in"></div>
+                <div class="iti__selected-dial-code">+91</div>
+                <div class="iti__arrow"></div>
+              </div>
+              <!-- Country list omitted for brevity -->
+            </div>
+            <!-- Actual phone input -->
+            <input class="wpcf7-form-control wpcf7-tel" id="customize-telephoneh" type="tel" name="phoneno_hide" autocomplete="on" required="" placeholder="81234 56789" style="
+                     border:none;
+                     outline:none;
+                     font-size:14px;
+                     width:200px;
+                     min-width:200px;
+                     height:100%;
+                     line-height:1.2;
+                     margin-left:10px;
+                     box-sizing:border-box;
+                   " data-faitracker-input-id="form-2.field-25">
+            <input type="hidden" name="phoneno">
+          </div>
+        </div>
+
+        <!-- "Get a Demo" Button -->
+        
+
+<button class="wpcf7-form-control wpcf7-submit et_pb_button et_pb_bg_layout_light contact-form-submit-button" id="footersubmitt" type="submit" value="Talk to an Advisor" style="
+                  background:#ffd132!important;
+                  color:#000000!important;
+                  border:none;
+                  padding:0 20px;
+                  font-weight:bold;
+                  cursor:pointer;
+                  display:inline-flex;
+                  align-items:center;
+                  justify-content:center;
+                  font-size:14px;
+                  white-space:nowrap;
+                  height:100%;border-radius:0px;box-sizing:border-box;
+                " data-faitracker-form-bind="true">
+          Get a Demo
+        </button>
+
+        <!-- CF7 Spinner / Response Output -->
+        
+        
+
+        <!-- Additional hidden fields if needed -->
+        <input type="hidden" name="utm_campaign" value="">
+        <input type="hidden" name="utm_source" value="unicommerce.com">
+        <input type="hidden" name="utm_medium" value="referral">
+        <input type="hidden" name="utm_term" value="(not provided)">
+        <input type="hidden" name="utm_content" value="knwmore_panel">
+        <input type="hidden" id="gclid_field" name="gclid_field" value="">
+      </form>
+    </div>
+
+    <!-- Featured Resource Link -->
+    <div style="margin-top:10px;">
+      <small style="color:#fff; font-size:0.9em;">
+        <a href="https://unicommerce.com/blog/sell-on-myntra/" target="_blank" style="color:#ACC90D; text-decoration:underline;">
+          Featured: How to Sell on Myntra
+        </a>
+      </small>
+    </div>
+
+    <!-- Trust Badge -->
+    <div class="et_pb_module et_pb_image et_pb_image_0" style="margin-top:20px;">
+      <span class="et_pb_image_wrap">
+        <img decoding="async" width="667" height="58" src="https://infowordpress.s3.ap-south-1.amazonaws.com/wp-content/uploads/2025/02/27131322/trustt.webp" alt="Customer Reviews &amp; Certifications" srcset="https://infowordpress.s3.ap-south-1.amazonaws.com/wp-content/uploads/2025/02/27131322/trustt.webp 667w,
+                     https://infowordpress.s3.ap-south-1.amazonaws.com/wp-content/uploads/2025/02/27131322/trustt-480x42.webp 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 667px, 100vw">
+      </span>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN: Hero Image & Disclaimer -->
+  <div class="et_pb_column et_pb_column_1_2 et_pb_column_1 et_pb_css_mix_blend_mode_passthrough et-last-child" style="flex:1; min-width:300px; display:flex; flex-direction:column; align-items:center;">
+
+    <!-- Hero Image -->
+    <div class="et_pb_module et_pb_image et_pb_image_3 et_pb_image_sticky" style="width:100%; max-width:836px;">
+      <span class="et_pb_image_wrap" style="display:block;">
+        <img fetchpriority="high" decoding="async" width="836" height="652" src="https://infowordpress.s3.ap-south-1.amazonaws.com/wp-content/uploads/2025/01/03161113/fbi.webp" alt="Cloud Based Ecommerce SaaS Platform in India" srcset="https://infowordpress.s3.ap-south-1.amazonaws.com/wp-content/uploads/2025/01/03161113/fbi.webp 836w,
+                     https://infowordpress.s3.ap-south-1.amazonaws.com/wp-content/uploads/2025/01/03161113/fbi-480x374.webp 480w" sizes="(min-width: 0px) and (max-width: 480px) 480px, (min-width: 481px) 836px, 100vw" style="width:100%; height:auto;">
+      </span>
+    </div>
+
+    <!-- Disclaimer Text -->
+    <div class="et_pb_with_border et_pb_module et_pb_text et_pb_text_3 et_pb_text_align_center et_pb_bg_layout_light" style="margin-top:20px; text-align:center;">
+      <div class="et_pb_text_inner" style="color:#fff;">
+        *Unicommerce helps process 20–25% of all e-commerce dropship shipments in India as per RedSeer.
+      </div>
+    </div>
+  </div>
+</div>
+Part 2:
+<div id="how-it-works-section" class="et_pb_column et_pb_column_4_4 et_pb_column_9  et_pb_css_mix_blend_mode_passthrough et-last-child">
+`,
+      impactText: `• Higher Above-the-Fold Engagement: By clarifying your core value proposition and limiting CTA overload, more visitors will click the primary button (“How It Works”).
+• Better Scroll Depth: A relevant, captivating first impression can nudge more users to explore below the hero, boosting that 7% bottom-scroll rate.
+• Form Submission Lift: Once visitors see a concise overview (or read your high-value blog post), they’ll be more inclined to submit the form or book a demo, improving that current 0.4% conversion rate.
+By focusing on a single, compelling hero message, trimming CTA clutter, and surfacing your strongest resource, you’ll give visitors a simpler, clearer path—leading to higher click-throughs and better homepage conversions.
+`,
+    },
+  ],
 };
 
 const normalizeUrl = (url) => {
@@ -483,7 +691,9 @@ async function findConnectionIdForTask(taskId) {
 
   // Add detailed logging for debugging
   console.log(`Starting to look for connectionId for taskId: ${taskId}`);
-  console.log(`Will attempt ${maxAttempts} times with delays between ${initialDelay}ms and ${maxDelay}ms`);
+  console.log(
+    `Will attempt ${maxAttempts} times with delays between ${initialDelay}ms and ${maxDelay}ms`
+  );
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     try {
@@ -491,20 +701,30 @@ async function findConnectionIdForTask(taskId) {
         TableName: CONFIG.CONNECTIONS_TABLE,
         KeyConditionExpression: "taskId = :taskId",
         ExpressionAttributeValues: { ":taskId": taskId },
-        ConsistentRead: true // Enable strongly consistent reads
+        ConsistentRead: true, // Enable strongly consistent reads
       };
 
-      console.log(`Attempt ${attempt + 1}/${maxAttempts} to find connectionId...`);
+      console.log(
+        `Attempt ${attempt + 1}/${maxAttempts} to find connectionId...`
+      );
       const result = await dynamoDb.send(new QueryCommand(params));
 
-      if (result.Items && result.Items.length > 0 && result.Items[0].connectionId !== undefined) {
+      if (
+        result.Items &&
+        result.Items.length > 0 &&
+        result.Items[0].connectionId !== undefined
+      ) {
         const connectionId = result.Items[0].connectionId;
-        console.log(`Successfully found connectionId: ${connectionId} for taskId: ${taskId}`);
+        console.log(
+          `Successfully found connectionId: ${connectionId} for taskId: ${taskId}`
+        );
         return connectionId;
       }
 
       // No connection found, prepare for retry
-      console.log(`No connection found for taskId ${taskId} on attempt ${attempt + 1}`);
+      console.log(
+        `No connection found for taskId ${taskId} on attempt ${attempt + 1}`
+      );
 
       if (attempt < maxAttempts - 1) {
         // Calculate next delay with exponential backoff and jitter
@@ -512,8 +732,10 @@ async function findConnectionIdForTask(taskId) {
         const jitter = Math.random() * 0.3 * currentDelay; // Add up to 30% random jitter
         const totalDelay = currentDelay + jitter;
 
-        console.log(`Waiting ${Math.round(totalDelay)}ms before next attempt...`);
-        await new Promise(resolve => setTimeout(resolve, totalDelay));
+        console.log(
+          `Waiting ${Math.round(totalDelay)}ms before next attempt...`
+        );
+        await new Promise((resolve) => setTimeout(resolve, totalDelay));
       }
     } catch (error) {
       console.error(
@@ -526,14 +748,20 @@ async function findConnectionIdForTask(taskId) {
         const jitter = Math.random() * 0.3 * currentDelay;
         const totalDelay = currentDelay + jitter;
 
-        console.log(`Error occurred, waiting ${Math.round(totalDelay)}ms before retry...`);
-        await new Promise(resolve => setTimeout(resolve, totalDelay));
+        console.log(
+          `Error occurred, waiting ${Math.round(totalDelay)}ms before retry...`
+        );
+        await new Promise((resolve) => setTimeout(resolve, totalDelay));
       }
     }
   }
 
-  console.log(`Failed to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`);
-  throw new Error(`Unable to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`);
+  console.log(
+    `Failed to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`
+  );
+  throw new Error(
+    `Unable to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`
+  );
 }
 
 // Event parsing function with enhanced validation
@@ -569,7 +797,7 @@ export const parseEvent = (event) => {
 export const sendMessageToClient = async (connectionId, message, endpoint) => {
   if (!connectionId || !endpoint) {
     console.log(
-      "Skipping WebSocket message - missing connectionId or endpoint",
+      "Skipping WebSocket message - missing connectionId or endpoint"
     );
     return;
   }
@@ -597,7 +825,7 @@ export const sendMessageToClient = async (connectionId, message, endpoint) => {
     }
     console.error(
       `Error sending message to connection ${connectionId}:`,
-      error,
+      error
     );
     throw error;
   }
@@ -654,7 +882,7 @@ export const sendProgressUpdate = async (
   endpoint,
   taskId,
   currentStep,
-  progress,
+  progress
 ) => {
   if (!connectionId || !endpoint) return;
 
@@ -668,7 +896,7 @@ export const sendProgressUpdate = async (
         progress,
         timestamp: new Date().toISOString(),
       },
-      endpoint,
+      endpoint
     );
   } catch (error) {
     console.warn(`Failed to send progress update for task ${taskId}:`, error);
@@ -684,7 +912,7 @@ export const handler = async (event) => {
   try {
     console.log(
       "Lambda invocation with event:",
-      JSON.stringify(event, null, 2),
+      JSON.stringify(event, null, 2)
     );
     const parsedEvent = parseEvent(event);
     taskId = parsedEvent.taskId;
@@ -707,7 +935,7 @@ export const handler = async (event) => {
             currentStep: "validation",
             progress: 0,
           },
-          parsedEvent.endpoint,
+          parsedEvent.endpoint
         );
       }
 
@@ -746,7 +974,7 @@ export const handler = async (event) => {
     async function sendProgressWithDelay() {
       for (const { step, progress, delay } of progressSteps) {
         console.log(
-          `Sending progress update for ${step} with progress ${progress}`,
+          `Sending progress update for ${step} with progress ${progress}`
         );
         if (connectionId) {
           await sendProgressUpdate(
@@ -754,10 +982,10 @@ export const handler = async (event) => {
             parsedEvent.endpoint,
             taskId,
             step,
-            progress,
+            progress
           );
           console.log(
-            `Sent progress update for ${step} with progress ${progress}`,
+            `Sent progress update for ${step} with progress ${progress}`
           );
         }
         await new Promise((resolve) => setTimeout(resolve, delay));
@@ -792,7 +1020,7 @@ export const handler = async (event) => {
           step: "completed",
           progress: 100,
         },
-        parsedEvent.endpoint,
+        parsedEvent.endpoint
       );
     }
 
@@ -822,7 +1050,7 @@ export const handler = async (event) => {
               currentStep: "error",
               progress: 0,
             },
-            CONFIG.WEBSOCKET_ENDPOINT.replace("wss://", "https://"),
+            CONFIG.WEBSOCKET_ENDPOINT.replace("wss://", "https://")
           );
         }
       } catch (updateError) {
