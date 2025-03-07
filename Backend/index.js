@@ -1,24 +1,16 @@
-import analyze from "./Controllers/analyze.js";
 
-export const handler = async (event) => {
-  let body;
-  try {
-    body = event.body ? (typeof event.body === "string" ? JSON.parse(event.body) : event.body) : event;
-  } catch (error) {
-    console.log(error);
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ message: "Invalid JSON body" }),
-    };
-  }
+import { demoWebsiteAnalysisFunction } from "./Lambdas/demoWebsiteAnalysisFunction.js";
+import { handleMessage } from "./Lambdas/handleMessage.js";
+import { initiateAnalysis } from "./Lambdas/initiateAnalysis.js";
 
-  const { url } = body;
-  if (!url) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ message: "URL is required" }),
-    };
-  }
+const startAnalysis = async (event) => {
+  return initiateAnalysis(event);
+};
 
-  return analyze(url);
+const websiteAnalysis = async (event) => {
+  return demoWebsiteAnalysisFunction(event);
+};
+
+const suscribeUserToTaskId = async (event) => {
+  return handleMessage(event);
 };
