@@ -1,20 +1,21 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
-import crypto from "crypto"; // Using built-in crypto instead of uuid package
+import crypto from "crypto";
+import dotenv from "dotenv";
+dotenv.config();
 
 const client = new DynamoDBClient({});
 const dynamoDb = DynamoDBDocumentClient.from(client);
 const lambda = new LambdaClient({});
 
-// Generate UUID using crypto
 function generateUUID() {
   return crypto.randomUUID();
 }
 
 async function createTask(url, taskId) {
   const params = {
-    TableName: "demoWebsiteAnalysisResults",
+    TableName: process.env.RESULT_TABLE || "demoWebsiteAnalysisResults",
     Item: {
       taskId,
       url,
@@ -26,7 +27,7 @@ async function createTask(url, taskId) {
   return dynamoDb.send(new PutCommand(params));
 }
 
-export const handler = async (event) => {
+export const initiateAnalysis = async (event) => {
   try {
     // Handle different content types and API Gateway payload formats
     let body;
@@ -45,10 +46,6 @@ export const handler = async (event) => {
     if (!url) {
       return {
         statusCode: 400,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
         body: JSON.stringify({ message: "URL is required" }),
       };
     }
@@ -69,20 +66,12 @@ export const handler = async (event) => {
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
       body: JSON.stringify({ taskId }),
     };
   } catch (error) {
     console.error("Error:", error);
     return {
       statusCode: 500,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
       body: JSON.stringify({
         message: "Internal server error",
         error: error.message,

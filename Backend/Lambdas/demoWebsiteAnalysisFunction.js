@@ -905,7 +905,7 @@ export const sendProgressUpdate = async (
 };
 
 // Enhanced Lambda handler with comprehensive error handling
-export const handler = async (event) => {
+export const demoWebsiteAnalysisFunction = async (event) => {
   let taskId;
   let connectionId;
 

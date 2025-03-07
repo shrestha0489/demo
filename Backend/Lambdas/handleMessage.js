@@ -5,7 +5,7 @@ import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 const client = new DynamoDBClient({});
 const dynamoDb = DynamoDBDocumentClient.from(client);
 
-export const handler = async (event) => {
+export const handleMessage = async (event) => {
   const connectionId = event.requestContext.connectionId;
   const { taskId } = JSON.parse(event.body);
 
