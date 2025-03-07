@@ -35,8 +35,8 @@ jobs:
       - name: Deploy to demoInitiateAnalysis
         run: aws lambda update-function-code --function-name demoInitiateAnalysis --s3-bucket demo-dashboard-spike --s3-key demoWebsiteAnalysis-lambda.zip
       
-      - name: Deploy to demoWebsiteAnalysisResults
-        run: aws lambda update-function-code --function-name demoWebsiteAnalysisResults --s3-bucket demo-dashboard-spike --s3-key demoWebsiteAnalysis-lambda.zip
+      - name: Deploy to demoWebsiteAnalysisFunction
+        run: aws lambda update-function-code --function-name demoWebsiteAnalysisFunction --s3-bucket demo-dashboard-spike --s3-key demoWebsiteAnalysis-lambda.zip
       
       - name: Deploy to demoHandleMessage
         run: aws lambda update-function-code --function-name demoHandleMessage --s3-bucket demo-dashboard-spike --s3-key demoWebsiteAnalysis-lambda.zip
