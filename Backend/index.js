@@ -3,14 +3,14 @@ import { demoWebsiteAnalysisFunction } from "./Lambdas/demoWebsiteAnalysisFuncti
 import { handleMessage } from "./Lambdas/handleMessage.js";
 import { initiateAnalysis } from "./Lambdas/initiateAnalysis.js";
 
-const startAnalysis = async (event) => {
+export const startAnalysis = async (event) => {
   return initiateAnalysis(event);
 };
 
-const websiteAnalysis = async (event) => {
+export const websiteAnalysis = async (event) => {
   return demoWebsiteAnalysisFunction(event);
 };
 
-const suscribeUserToTaskId = async (event) => {
+export const suscribeUserToTaskId = async (event) => {
   return handleMessage(event);
 };
