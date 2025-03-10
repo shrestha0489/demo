@@ -3,11 +3,13 @@ import {
   DynamoDBDocumentClient,
   UpdateCommand,
   QueryCommand,
+  ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import {
   ApiGatewayManagementApiClient,
   PostToConnectionCommand,
 } from "@aws-sdk/client-apigatewaymanagementapi";
+
 
 // Configuration from environment variables
 const CONFIG = {
@@ -19,13 +21,9 @@ const CONFIG = {
   CONNECTIONS_TABLE:
     process.env.CONNECTIONS_TABLE || "demoWebsiteAnalysisResults",
   ANALYSIS_TABLE: process.env.ANALYSIS_TABLE || "demoWebsiteAnalysisResults",
+  WEBSITE_ANALYSIS_TABLE: process.env.WEBSITE_ANALYSIS_TABLE || "demoWebsiteAnalysis",
 };
 
-// Initialize DynamoDB clients
-const client = new DynamoDBClient({});
-const dynamoDb = DynamoDBDocumentClient.from(client);
-
-// Sample problems for analysis
 const websiteIssues = {
   "getgsi.com": [
     {
@@ -662,6 +660,10 @@ By focusing on a single, compelling hero message, trimming CTA clutter, and surf
   ],
 };
 
+// Initialize DynamoDB clients
+const client = new DynamoDBClient({});
+const dynamoDb = DynamoDBDocumentClient.from(client);
+
 const normalizeUrl = (url) => {
   return url
     .replace(/^https?:\/\//, "") // Remove protocol (http:// or https://)
@@ -669,10 +671,51 @@ const normalizeUrl = (url) => {
     .toLowerCase(); // Convert the URL to lowercase
 };
 
-// Helper function to validate if URL exists in our database
-const validateUrl = (url) => {
+// Helper function to fetch analysis data for a URL from DynamoDB
+async function fetchWebsiteAnalysis(url) {
   const normalizedUrl = normalizeUrl(url);
-  return websiteIssues.hasOwnProperty(normalizedUrl) ? normalizedUrl : null;
+  console.log(`Fetching analysis data for normalized URL: ${normalizedUrl}`);
+  
+  try {
+    const params = {
+      TableName: CONFIG.WEBSITE_ANALYSIS_TABLE,
+      FilterExpression: "url = :url",
+      ExpressionAttributeValues: {
+        ":url": normalizedUrl
+      }
+    };
+    
+    const result = await dynamoDb.send(new ScanCommand(params));
+    
+    if (!result.Items || result.Items.length === 0) {
+      console.log(`No analysis found for URL: ${normalizedUrl}`);
+      return null;
+    }
+    
+    console.log(`Found ${result.Items.length} analysis items for URL: ${normalizedUrl}`);
+    
+    // Group analyses by URL
+    const websiteIssues = {};
+    websiteIssues[normalizedUrl] = result.Items.map((item, index) => {
+      return {
+        problemDescription: item.problem || "",
+        solutionText: item.solution || "",
+        impactText: item.impact || "",
+      };
+    });
+    
+    return websiteIssues;
+  } catch (error) {
+    console.error(`Error fetching analysis for URL ${normalizedUrl}:`, error);
+    throw error;
+  }
+}
+
+// Helper function to validate if URL exists in our database
+const validateUrl = async (url) => {
+  const normalizedUrl = normalizeUrl(url);
+  const websiteIssues = await fetchWebsiteAnalysis(url);
+  return websiteIssues && websiteIssues.hasOwnProperty(normalizedUrl) ? normalizedUrl : null;
 };
 
 // Utility function for delay with exponential backoff
@@ -872,7 +915,6 @@ export const updateTaskStatus = async (taskId, status, data = {}) => {
   } catch (error) {
     console.error("Error updating task status in DynamoDB:", error);
     throw error;
-    return false;
   }
 };
 
@@ -922,7 +964,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
     console.log(`Found connectionId ${connectionId} for taskId ${taskId}`);
 
     // Validate URL
-    const validUrl = validateUrl(parsedEvent.url);
+    const validUrl = await validateUrl(parsedEvent.url);
     if (!validUrl) {
       // Send error message through WebSocket if URL doesn't exist
       if (connectionId) {
@@ -931,7 +973,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
           {
             taskId,
             status: "error",
-            error: "Client doesn’t exist",
+            error: "Client doesn't exist",
             currentStep: "validation",
             progress: 0,
           },
@@ -941,7 +983,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
 
       // Update task status to error
       await updateTaskStatus(taskId, "error", {
-        error: "Client doesn’t exist",
+        error: "Client doesn't exist",
       });
 
       return {
@@ -950,7 +992,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
         body: JSON.stringify({
           taskId,
           status: "error",
-          message: "Client doesn’t exist",
+          message: "Client doesn't exist",
         }),
       };
     }
@@ -994,6 +1036,9 @@ export const demoWebsiteAnalysisFunction = async (event) => {
 
     await sendProgressWithDelay();
 
+    // Fetch website analysis data from DynamoDB
+    const websiteIssues = await fetchWebsiteAnalysis(parsedEvent.url);
+    
     // Get analysis results for the specific URL
     const analysisResults = websiteIssues[validUrl].map((problem, index) => ({
       ...problem,

@@ -40,3 +40,6 @@ jobs:
       
       - name: Deploy to demoHandleMessage
         run: aws lambda update-function-code --function-name demoHandleMessage --s3-bucket demo-dashboard-spike --s3-key demoWebsiteAnalysis-lambda.zip
+      
+      - name: Deploy to demoAddAnalysisToDB
+        run: aws lambda update-function-code --function-name demoAddAnalysisToDB --s3-bucket demo-dashboard-spike --s3-key demoWebsiteAnalysis-lambda.zip
