@@ -10,7 +10,6 @@ import {
   PostToConnectionCommand,
 } from "@aws-sdk/client-apigatewaymanagementapi";
 
-
 // Configuration from environment variables
 const CONFIG = {
   WEBSOCKET_ENDPOINT:
@@ -21,7 +20,8 @@ const CONFIG = {
   CONNECTIONS_TABLE:
     process.env.CONNECTIONS_TABLE || "demoWebsiteAnalysisResults",
   ANALYSIS_TABLE: process.env.ANALYSIS_TABLE || "demoWebsiteAnalysisResults",
-  WEBSITE_ANALYSIS_TABLE: process.env.WEBSITE_ANALYSIS_TABLE || "demoWebsiteAnalysis",
+  WEBSITE_ANALYSIS_TABLE:
+    process.env.WEBSITE_ANALYSIS_TABLE || "demoWebsiteAnalysis",
 };
 
 const websiteIssues = {
@@ -32,17 +32,17 @@ const websiteIssues = {
       solutionText: `1. Improve Visual Hierarchy & Readability
         • The “Discover HubSpot by GSI” section is text-heavy, with no clear visual emphasis on differentiators. We will break the section into distinct value blocks using icons, bullet points, and whitespace.
         • Add a stronger subheadline to immediately convey GSI’s expertise in HubSpot implementation.
-        
+
 2. Refine CTA Strategy
   • The CTA “Get in Touch” is too generic. We will change it to something value-driven like:
   ✅ “Get a Free HubSpot Strategy Session”
   • Position an inline CTA below the key value points to capture user intent earlier.
-        
+
 3. Enhance Engagement with Trust Signals
   • Add client testimonials or case study previews just below the “Why Choose HubSpot” section.
-        
+
   ##### Proposed Solution HTML
-        
+
 
         <div class="row-fluid-wrapper row-depth-1 row-number-1 dnd-section">
          <div class="row-fluid">
@@ -163,11 +163,11 @@ const websiteIssues = {
  2️⃣ Urgency & Time-Sensitive Offers
 • CTA Enhancement: Replace “Talk to a GSI Cybersecurity Expert” with “Get a 30-Minute Free Security Audit” in the button.
 • Limited-Time Offer Banner: Above the main text, add a “This Month Only: Free Vulnerability Scan for Consultation Requests” banner to create urgency.
- 3️⃣ Interactive Engagement Triggers 
+ 3️⃣ Interactive Engagement Triggers
 • Risk Score Assessment Tool: Embed a “See Your Risk Score in 60 Seconds” CTA next to the main CTA button. This is for a subsequent experiment.
 
 ##### Proposed Solution HTML
-      
+
       <div class="row-fluid-wrapper row-depth-1 row-number-1 dnd_area-row-0-vertical-alignment dnd-section">
       <div class="row-fluid ">
          <div class="span5 widget-span widget-type-cell cell_1687196825652-vertical-alignment dnd-column">
@@ -279,13 +279,13 @@ const websiteIssues = {
         "The website’s case studies mostly feature NetSuite projects, with only one focusing on cybersecurity. This lack of diverse representation contributes to a significant drop-off during the consideration phase for cybersecurity services, particularly amidst ongoing paid campaigns. Currently, the conversion rate for the cybersecurity consideration journey is just 0.1%. By adding more targeted cybersecurity case studies, this rate could potentially increase by at least 3X, given the low starting point.",
       solutionText: `Develop and prominently display additional cybersecurity case studies on the website, focusing on relevant and impactful topics. These case studies should highlight successful cybersecurity projects, detailing the challenges faced, solutions implemented, and measurable outcomes achieved. Key topics to cover include:
  1. Phishing Simulation and Training: Show how your services helped organizations implement phishing testing platforms to educate employees and mitigate phishing attack risks.
-      
+
  2. Emerging Cybersecurity Threats: Showcase your proactive approach in addressing new threats like supply chain software attacks and AI-driven cyberattacks, and demonstrate how your solutions have protected clients.
-      
+
  3. Zero Trust Security Implementations: Highlight successful deployments of Zero Trust models, showing how they enhanced clients’ security by ensuring strict verification for all users and devices.
-      
+
  4. Cybersecurity Assessments and Compliance: Illustrate how your comprehensive assessments helped organizations identify vulnerabilities, meet compliance requirements, and develop robust security strategies.
-      
+
  5. Incident Response and Ransomware Negotiations: Provide insights into your role in assisting clients during ransomware attacks, including negotiation and recovery strategies, to showcase your crisis management expertise.
       Incorporate client testimonials to further add credibility and appeal. By creating a diverse set of case studies and strategically displaying them, you can engage visitors, demonstrate your cybersecurity expertise, and significantly increase conversion rates during the consideration phase.
 
@@ -314,21 +314,21 @@ const websiteIssues = {
       solutionText: `1. Messaging Shift to CIO Pain Points
 • The headline currently focuses on uptime (developer concern).
 • Modify it to reflect business and operational impact, which resonates with CIOs.
-      
+
 ✅ Before: Be in Control of Uptime
 ✅ After: Ensure Business Continuity with AI-Driven Reliability
-      
+
  2. CTA Prioritization for Enterprise Decision-Makers
 • “Start for Free” is attractive for developers but dilutes enterprise intent.
 • Swap primary CTA to “Request a Custom Reliability Audit”, positioning Squadcast as a strategic partner.
-      
+
 ✅ Before: Start For Free Now | Schedule a Demo
 ✅ After: Request a Custom Reliability Audit | See How Enterprises Use Squadcast
-      
+
  3. G2 Awards Section: Emphasizing Enterprise Success
 • The G2 awards already highlight enterprise but aren’t effectively leveraged.
 • Add a subheadline connecting the awards to enterprise-scale reliability management.
-      
+
 ✅ Before: Leading with Innovation: Pioneering Unified Incident Management
 ✅ After: Trusted by Enterprise IT Teams for Unmatched Uptime & Security
 
@@ -396,7 +396,7 @@ const websiteIssues = {
       problemDescription: `Pricing Page Friction Leading to Drop-offs in Decision Journey. Squadcast’s Pricing page has a 78% bounce rate, with CIOs and enterprise buyers failing to engage. The page prioritizes developer-focused feature breakdowns, causing decision paralysis in the decision phase. Lack of ROI framing, persona-driven clarity, and guided CTAs prevents high-intent visitors from converting.`,
       solutionText: `1. Reframe the Page Header for CIOs & Decision-Makers
         • Change “Reliability. At any cost.” to “Reliability That Scales With Your Business” or “Enterprise-Grade Reliability, Built for Growth” to emphasize value over cost.
-        
+
  2. Prioritize Enterprise-Driven Messaging
 • Add a subheader above the pricing table:
 “For Enterprise Teams: Custom SLAs, Compliance Support, and Dedicated Security Features Available.”
@@ -409,7 +409,7 @@ const websiteIssues = {
  4. Improve Call-to-Action (CTA) Strategy
 • Change “Start Free Trial” to “Try Squadcast Risk-Free” (for Pro & Premium) and
 “Get a Custom Enterprise Plan” (instead of “Contact Us”).
-        
+
 ##### Proposed Solution HTML
         Pricing and pricing page changes are generated only after explicit approval.
 `,
@@ -443,7 +443,7 @@ const websiteIssues = {
       solutionText: `Implement a split-path CTA:
 • Developers see “Test in Your Environment” (hands-on product sandbox).
 • Security leaders see “CISO Briefing: See Firewall in Action” (live walkthrough focused on compliance & risk).
-        
+
 ##### Proposed Solution HTML
         Not part of PRO plan.
 `,
@@ -477,7 +477,7 @@ Part 1
 <div id="banner-heading" class="et_pb_row et_pb_row_0 pa-inline-buttons et_pb_gutters2 et-last-child">
   <!-- Left Column: Headline, CTAs, and Featured Resource -->
   <div class="et_pb_column et_pb_column_1_2 et_pb_column_0 et_pb_css_mix_blend_mode_passthrough">
-    
+
     <!-- Headline & Sub-Headline -->
     <div class="et_pb_module et_pb_text et_pb_text_1 et_pb_text_align_left et_pb_text_align_center-phone et_pb_bg_layout_light">
       <div class="et_pb_text_inner">
@@ -578,7 +578,7 @@ Part 1
         </div>
 
         <!-- "Get a Demo" Button -->
-        
+
 
 <button class="wpcf7-form-control wpcf7-submit et_pb_button et_pb_bg_layout_light contact-form-submit-button" id="footersubmitt" type="submit" value="Talk to an Advisor" style="
                   background:#ffd132!important;
@@ -598,8 +598,8 @@ Part 1
         </button>
 
         <!-- CF7 Spinner / Response Output -->
-        
-        
+
+
 
         <!-- Additional hidden fields if needed -->
         <input type="hidden" name="utm_campaign" value="">
@@ -675,32 +675,33 @@ const normalizeUrl = (url) => {
 async function fetchWebsiteAnalysis(url) {
   const normalizedUrl = normalizeUrl(url);
   console.log(`Fetching analysis data for normalized URL: ${normalizedUrl}`);
-  
+
   try {
     // Since 'url' is the partition key, we can use a direct query
     const params = {
       TableName: CONFIG.WEBSITE_ANALYSIS_TABLE,
       KeyConditionExpression: "#urlAttr = :url",
       ExpressionAttributeNames: {
-        "#urlAttr": "url"  // Use expression attribute name for reserved keyword
+        "#urlAttr": "url", // Use expression attribute name for reserved keyword
       },
       ExpressionAttributeValues: {
-        ":url": normalizedUrl
-      }
+        ":url": normalizedUrl,
+      },
     };
-    
+
     const result = await dynamoDb.send(new QueryCommand(params));
-    
+
     if (!result.Items || result.Items.length === 0) {
       console.log(`No analysis found for URL: ${normalizedUrl}`);
       return null;
     }
-    
-    console.log(`Found ${result.Items.length} analysis items for URL: ${normalizedUrl}`);
-    
+
+    console.log(
+      `Found ${result.Items.length} analysis items for URL: ${normalizedUrl}`,
+    );
+
     // Create return object with template literals format for strings
-    const analysis = {};
-    
+    let analysis = {};
     // Format the data with the fields in the exact format requested
     analysis[normalizedUrl] = result.Items.map((item) => {
       return {
@@ -709,7 +710,7 @@ async function fetchWebsiteAnalysis(url) {
         impactText: item.impact || "",
       };
     });
-    
+
     return analysis;
   } catch (error) {
     console.error(`Error fetching analysis for URL ${normalizedUrl}:`, error);
@@ -720,16 +721,18 @@ async function fetchWebsiteAnalysis(url) {
 // Helper function to validate if URL exists in our database or static data
 const validateUrl = async (url) => {
   const normalizedUrl = normalizeUrl(url);
-  
+
   // First check static data
   if (websiteIssues && websiteIssues[normalizedUrl]) {
     return normalizedUrl;
   }
-  
+
   // Then check database
   try {
     const dbAnalysis = await fetchWebsiteAnalysis(url);
-    return dbAnalysis && dbAnalysis.hasOwnProperty(normalizedUrl) ? normalizedUrl : null;
+    return dbAnalysis && dbAnalysis.hasOwnProperty(normalizedUrl)
+      ? normalizedUrl
+      : null;
   } catch (error) {
     console.error(`Error validating URL ${normalizedUrl}:`, error);
     return null;
@@ -753,7 +756,7 @@ async function findConnectionIdForTask(taskId) {
   // Add detailed logging for debugging
   console.log(`Starting to look for connectionId for taskId: ${taskId}`);
   console.log(
-    `Will attempt ${maxAttempts} times with delays between ${initialDelay}ms and ${maxDelay}ms`
+    `Will attempt ${maxAttempts} times with delays between ${initialDelay}ms and ${maxDelay}ms`,
   );
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -766,7 +769,7 @@ async function findConnectionIdForTask(taskId) {
       };
 
       console.log(
-        `Attempt ${attempt + 1}/${maxAttempts} to find connectionId...`
+        `Attempt ${attempt + 1}/${maxAttempts} to find connectionId...`,
       );
       const result = await dynamoDb.send(new QueryCommand(params));
 
@@ -777,14 +780,14 @@ async function findConnectionIdForTask(taskId) {
       ) {
         const connectionId = result.Items[0].connectionId;
         console.log(
-          `Successfully found connectionId: ${connectionId} for taskId: ${taskId}`
+          `Successfully found connectionId: ${connectionId} for taskId: ${taskId}`,
         );
         return connectionId;
       }
 
       // No connection found, prepare for retry
       console.log(
-        `No connection found for taskId ${taskId} on attempt ${attempt + 1}`
+        `No connection found for taskId ${taskId} on attempt ${attempt + 1}`,
       );
 
       if (attempt < maxAttempts - 1) {
@@ -794,14 +797,14 @@ async function findConnectionIdForTask(taskId) {
         const totalDelay = currentDelay + jitter;
 
         console.log(
-          `Waiting ${Math.round(totalDelay)}ms before next attempt...`
+          `Waiting ${Math.round(totalDelay)}ms before next attempt...`,
         );
         await new Promise((resolve) => setTimeout(resolve, totalDelay));
       }
     } catch (error) {
       console.error(
         `Error querying DynamoDB for taskId ${taskId} (attempt ${attempt + 1}):`,
-        error
+        error,
       );
 
       if (attempt < maxAttempts - 1) {
@@ -810,7 +813,7 @@ async function findConnectionIdForTask(taskId) {
         const totalDelay = currentDelay + jitter;
 
         console.log(
-          `Error occurred, waiting ${Math.round(totalDelay)}ms before retry...`
+          `Error occurred, waiting ${Math.round(totalDelay)}ms before retry...`,
         );
         await new Promise((resolve) => setTimeout(resolve, totalDelay));
       }
@@ -818,10 +821,10 @@ async function findConnectionIdForTask(taskId) {
   }
 
   console.log(
-    `Failed to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`
+    `Failed to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`,
   );
   throw new Error(
-    `Unable to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`
+    `Unable to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`,
   );
 }
 
@@ -858,7 +861,7 @@ export const parseEvent = (event) => {
 export const sendMessageToClient = async (connectionId, message, endpoint) => {
   if (!connectionId || !endpoint) {
     console.log(
-      "Skipping WebSocket message - missing connectionId or endpoint"
+      "Skipping WebSocket message - missing connectionId or endpoint",
     );
     return;
   }
@@ -886,7 +889,7 @@ export const sendMessageToClient = async (connectionId, message, endpoint) => {
     }
     console.error(
       `Error sending message to connection ${connectionId}:`,
-      error
+      error,
     );
     throw error;
   }
@@ -942,7 +945,7 @@ export const sendProgressUpdate = async (
   endpoint,
   taskId,
   currentStep,
-  progress
+  progress,
 ) => {
   if (!connectionId || !endpoint) return;
 
@@ -956,7 +959,7 @@ export const sendProgressUpdate = async (
         progress,
         timestamp: new Date().toISOString(),
       },
-      endpoint
+      endpoint,
     );
   } catch (error) {
     console.warn(`Failed to send progress update for task ${taskId}:`, error);
@@ -972,7 +975,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
   try {
     console.log(
       "Lambda invocation with event:",
-      JSON.stringify(event, null, 2)
+      JSON.stringify(event, null, 2),
     );
     const parsedEvent = parseEvent(event);
     taskId = parsedEvent.taskId;
@@ -995,7 +998,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
             currentStep: "validation",
             progress: 0,
           },
-          parsedEvent.endpoint
+          parsedEvent.endpoint,
         );
       }
 
@@ -1034,7 +1037,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
     async function sendProgressWithDelay() {
       for (const { step, progress, delay } of progressSteps) {
         console.log(
-          `Sending progress update for ${step} with progress ${progress}`
+          `Sending progress update for ${step} with progress ${progress}`,
         );
         if (connectionId) {
           await sendProgressUpdate(
@@ -1042,10 +1045,10 @@ export const demoWebsiteAnalysisFunction = async (event) => {
             parsedEvent.endpoint,
             taskId,
             step,
-            progress
+            progress,
           );
           console.log(
-            `Sent progress update for ${step} with progress ${progress}`
+            `Sent progress update for ${step} with progress ${progress}`,
           );
         }
         await new Promise((resolve) => setTimeout(resolve, delay));
@@ -1056,20 +1059,16 @@ export const demoWebsiteAnalysisFunction = async (event) => {
 
     // Fetch analysis results - prioritize static data, then fetch from DB
     let analysisData;
-    if (websiteIssues && websiteIssues[validUrl]) {
-      console.log(`Using static predefined analysis for ${validUrl}`);
-      analysisData = websiteIssues[validUrl];
-    } else {
-      console.log(`Fetching analysis from database for ${validUrl}`);
-      const dbWebsiteIssues = await fetchWebsiteAnalysis(parsedEvent.url);
-      
-      if (!dbWebsiteIssues || !dbWebsiteIssues[validUrl]) {
-        throw new Error(`No analysis data found for URL: ${validUrl}`);
-      }
-      
-      analysisData = dbWebsiteIssues[validUrl];
+
+    console.log(`Fetching analysis from database for ${validUrl}`);
+    const dbWebsiteIssues = await fetchWebsiteAnalysis(parsedEvent.url);
+
+    if (!dbWebsiteIssues || !dbWebsiteIssues[validUrl]) {
+      throw new Error(`No analysis data found for URL: ${validUrl}`);
     }
-    
+
+    analysisData = dbWebsiteIssues[validUrl] || websiteIssues[validUrl];
+
     // Format the analysis data for response with template literals format
     const analysisResults = analysisData.map((problem, index) => {
       return {
@@ -1085,14 +1084,14 @@ export const demoWebsiteAnalysisFunction = async (event) => {
     // Prepare response data with URL and problems array
     const responseData = {
       url: validUrl,
-      problems: analysisResults
+      problems: analysisResults,
     };
 
     // Final update in DynamoDB with completed status and results
     const finalUpdateSuccess = await updateTaskStatus(taskId, "completed", {
       problems: analysisResults,
     });
-    
+
     if (!finalUpdateSuccess) {
       throw new Error("Could not complete task - status update failed");
     }
@@ -1109,7 +1108,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
           step: "completed",
           progress: 100,
         },
-        parsedEvent.endpoint
+        parsedEvent.endpoint,
       );
     }
 
@@ -1140,7 +1139,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
               currentStep: "error",
               progress: 0,
             },
-            CONFIG.WEBSOCKET_ENDPOINT.replace("wss://", "https://")
+            CONFIG.WEBSOCKET_ENDPOINT.replace("wss://", "https://"),
           );
         }
       } catch (updateError) {

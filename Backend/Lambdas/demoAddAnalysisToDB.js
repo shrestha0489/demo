@@ -23,7 +23,7 @@ export const addAnalysisToDB = async (event) => {
     } else {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Missing request body',event,body:event.body })
+        body: JSON.stringify({ error: 'Missing request body', event, body: event.body })
       };
     }
 
@@ -35,14 +35,20 @@ export const addAnalysisToDB = async (event) => {
       };
     }
 
+    // Validate if problems array exists
+    if (!data.problems || !Array.isArray(data.problems)) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Problems array is required' })
+      };
+    }
+
     console.log("Processing analysis for URL:", data.url);
 
     // Prepare the item to be saved in DynamoDB
     const item = {
       url: data.url,
-      problem: data.problem || null,
-      solution: data.solution || null,
-      impact: data.impact || null,
+      problems: data.problems, // Store the entire problems array
       timestamp: new Date().toISOString()
     };
 
@@ -61,7 +67,8 @@ export const addAnalysisToDB = async (event) => {
       statusCode: 200,
       body: JSON.stringify({
         message: 'Website analysis saved successfully',
-        url: data.url
+        url: data.url,
+        problemCount: data.problems.length
       })
     };
   } catch (error) {
