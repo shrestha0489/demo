@@ -700,11 +700,13 @@ async function fetchWebsiteAnalysis(url) {
       `Found ${result.Items.length} analysis items for URL: ${normalizedUrl}`,
     );
 
-    console.log("problems: ", result.Items);
+    console.log("problems: ", result.Items[0]);
     // Create return object with template literals format for strings
     let analysis = {};
+    const problems = result.Items[0].problems;
     // Format the data with the fields in the exact format requested
-    analysis[normalizedUrl] = result.Items.map((item) => {
+    analysis[normalizedUrl] = problems.map((elem) => {
+      const item = JSON.parse(elem);
       return {
         problemDescription: item.problemDescription || "",
         solutionText: item.solutionText || "",
