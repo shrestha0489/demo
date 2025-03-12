@@ -677,11 +677,12 @@ async function fetchWebsiteAnalysis(url) {
   console.log(`Fetching analysis data for normalized URL: ${normalizedUrl}`);
   
   try {
+    // Since 'url' is the partition key, we can use a direct query
     const params = {
       TableName: CONFIG.WEBSITE_ANALYSIS_TABLE,
       KeyConditionExpression: "#urlAttr = :url",
       ExpressionAttributeNames: {
-        "#urlAttr": "url"
+        "#urlAttr": "url"  // Use expression attribute name for reserved keyword
       },
       ExpressionAttributeValues: {
         ":url": normalizedUrl
@@ -697,28 +698,42 @@ async function fetchWebsiteAnalysis(url) {
     
     console.log(`Found ${result.Items.length} analysis items for URL: ${normalizedUrl}`);
     
-    // Group analyses by URL, wrapping content in backticks
-    const websiteIssues = {};
-    websiteIssues[normalizedUrl] = result.Items.map((item) => {
+    // Create return object with template literals format for strings
+    const analysis = {};
+    
+    // Format the data with the fields in the exact format requested
+    analysis[normalizedUrl] = result.Items.map((item) => {
       return {
-        problemDescription: item.problem ? `\`${item.problem}\`` : "",
-        solutionText: item.solution ? `\`${item.solution}\`` : "",
-        impactText: item.impact ? `\`${item.impact}\`` : "",
+        problemDescription: item.problem || "",
+        solutionText: item.solution || "",
+        impactText: item.impact || "",
       };
     });
     
-    return websiteIssues;
+    return analysis;
   } catch (error) {
     console.error(`Error fetching analysis for URL ${normalizedUrl}:`, error);
     throw error;
   }
 }
 
-// Helper function to validate if URL exists in our database
+// Helper function to validate if URL exists in our database or static data
 const validateUrl = async (url) => {
   const normalizedUrl = normalizeUrl(url);
-  const websiteIssues = await fetchWebsiteAnalysis(url);
-  return websiteIssues && websiteIssues.hasOwnProperty(normalizedUrl) ? normalizedUrl : null;
+  
+  // First check static data
+  if (websiteIssues && websiteIssues[normalizedUrl]) {
+    return normalizedUrl;
+  }
+  
+  // Then check database
+  try {
+    const dbAnalysis = await fetchWebsiteAnalysis(url);
+    return dbAnalysis && dbAnalysis.hasOwnProperty(normalizedUrl) ? normalizedUrl : null;
+  } catch (error) {
+    console.error(`Error validating URL ${normalizedUrl}:`, error);
+    return null;
+  }
 };
 
 // Utility function for delay with exponential backoff
@@ -1039,20 +1054,45 @@ export const demoWebsiteAnalysisFunction = async (event) => {
 
     await sendProgressWithDelay();
 
-    // Fetch website analysis data from DynamoDB
-    const websiteIssues = await fetchWebsiteAnalysis(parsedEvent.url);
+    // Fetch analysis results - prioritize static data, then fetch from DB
+    let analysisData;
+    if (websiteIssues && websiteIssues[validUrl]) {
+      console.log(`Using static predefined analysis for ${validUrl}`);
+      analysisData = websiteIssues[validUrl];
+    } else {
+      console.log(`Fetching analysis from database for ${validUrl}`);
+      const dbWebsiteIssues = await fetchWebsiteAnalysis(parsedEvent.url);
+      
+      if (!dbWebsiteIssues || !dbWebsiteIssues[validUrl]) {
+        throw new Error(`No analysis data found for URL: ${validUrl}`);
+      }
+      
+      analysisData = dbWebsiteIssues[validUrl];
+    }
     
-    // Get analysis results for the specific URL
-    const analysisResults = websiteIssues[validUrl].map((problem, index) => ({
-      ...problem,
-      problemId: `problem-${index + 1}`,
-      timestamp: new Date().toISOString(),
-    }));
+    // Format the analysis data for response with template literals format
+    const analysisResults = analysisData.map((problem, index) => {
+      return {
+        // Just return the strings directly - they will be enclosed in template literals on client side
+        problemDescription: `${problem.problemDescription}`,
+        solutionText: `${problem.solutionText}`,
+        impactText: `${problem.impactText}`,
+        problemId: `problem-${index + 1}`,
+        timestamp: new Date().toISOString(),
+      };
+    });
+
+    // Prepare response data with URL and problems array
+    const responseData = {
+      url: validUrl,
+      problems: analysisResults
+    };
 
     // Final update in DynamoDB with completed status and results
     const finalUpdateSuccess = await updateTaskStatus(taskId, "completed", {
       problems: analysisResults,
     });
+    
     if (!finalUpdateSuccess) {
       throw new Error("Could not complete task - status update failed");
     }
@@ -1064,6 +1104,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
         {
           taskId,
           status: "completed",
+          url: validUrl,
           problems: analysisResults,
           step: "completed",
           progress: 100,
@@ -1078,6 +1119,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
       body: JSON.stringify({
         taskId,
         status: "completed",
+        url: validUrl,
         problems: analysisResults,
       }),
     };
