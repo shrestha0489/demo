@@ -677,15 +677,19 @@ async function fetchWebsiteAnalysis(url) {
   console.log(`Fetching analysis data for normalized URL: ${normalizedUrl}`);
   
   try {
+    // Since 'url' is the partition key, we can use a direct query instead of a scan with filter
     const params = {
       TableName: CONFIG.WEBSITE_ANALYSIS_TABLE,
-      FilterExpression: "url = :url",
+      KeyConditionExpression: "#urlAttr = :url",
+      ExpressionAttributeNames: {
+        "#urlAttr": "url"  // Use expression attribute name for reserved keyword
+      },
       ExpressionAttributeValues: {
         ":url": normalizedUrl
       }
     };
     
-    const result = await dynamoDb.send(new ScanCommand(params));
+    const result = await dynamoDb.send(new QueryCommand(params));
     
     if (!result.Items || result.Items.length === 0) {
       console.log(`No analysis found for URL: ${normalizedUrl}`);
@@ -696,7 +700,7 @@ async function fetchWebsiteAnalysis(url) {
     
     // Group analyses by URL
     const websiteIssues = {};
-    websiteIssues[normalizedUrl] = result.Items.map((item, index) => {
+    websiteIssues[normalizedUrl] = result.Items.map((item) => {
       return {
         problemDescription: item.problem || "",
         solutionText: item.solution || "",
