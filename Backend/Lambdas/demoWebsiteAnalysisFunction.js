@@ -677,12 +677,11 @@ async function fetchWebsiteAnalysis(url) {
   console.log(`Fetching analysis data for normalized URL: ${normalizedUrl}`);
   
   try {
-    // Since 'url' is the partition key, we can use a direct query instead of a scan with filter
     const params = {
       TableName: CONFIG.WEBSITE_ANALYSIS_TABLE,
       KeyConditionExpression: "#urlAttr = :url",
       ExpressionAttributeNames: {
-        "#urlAttr": "url"  // Use expression attribute name for reserved keyword
+        "#urlAttr": "url"
       },
       ExpressionAttributeValues: {
         ":url": normalizedUrl
@@ -698,13 +697,13 @@ async function fetchWebsiteAnalysis(url) {
     
     console.log(`Found ${result.Items.length} analysis items for URL: ${normalizedUrl}`);
     
-    // Group analyses by URL
+    // Group analyses by URL, wrapping content in backticks
     const websiteIssues = {};
     websiteIssues[normalizedUrl] = result.Items.map((item) => {
       return {
-        problemDescription: item.problem || "",
-        solutionText: item.solution || "",
-        impactText: item.impact || "",
+        problemDescription: item.problem ? `\`${item.problem}\`` : "",
+        solutionText: item.solution ? `\`${item.solution}\`` : "",
+        impactText: item.impact ? `\`${item.impact}\`` : "",
       };
     });
     
