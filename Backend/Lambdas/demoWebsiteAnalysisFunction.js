@@ -723,11 +723,6 @@ async function fetchWebsiteAnalysis(url) {
 const validateUrl = async (url) => {
   const normalizedUrl = normalizeUrl(url);
 
-  // First check static data
-  if (websiteIssues && websiteIssues[normalizedUrl]) {
-    return normalizedUrl;
-  }
-
   // Then check database
   try {
     const dbAnalysis = await fetchWebsiteAnalysis(url);
@@ -738,12 +733,6 @@ const validateUrl = async (url) => {
     console.error(`Error validating URL ${normalizedUrl}:`, error);
     return null;
   }
-};
-
-// Utility function for delay with exponential backoff
-const delay = (attempt) => {
-  const backoff = Math.min(CONFIG.RETRY_DELAY * Math.pow(2, attempt), 5000);
-  return new Promise((resolve) => setTimeout(resolve, backoff));
 };
 
 // New function to find WebSocket connection for a taskId with exponential backoff
@@ -1082,11 +1071,6 @@ export const demoWebsiteAnalysisFunction = async (event) => {
       };
     });
 
-    // Prepare response data with URL and problems array
-    const responseData = {
-      url: validUrl,
-      problems: analysisResults,
-    };
 
     // Final update in DynamoDB with completed status and results
     const finalUpdateSuccess = await updateTaskStatus(taskId, "completed", {
