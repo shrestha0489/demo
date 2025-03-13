@@ -702,10 +702,9 @@ async function fetchWebsiteAnalysis(url) {
     // Create return object with template literals format for strings
     let analysis = {};
     const problems = result.Items[0].problems;
-    console.log("actual problems: ",problems);
+    console.log("actual problems: ", problems);
     // Format the data with the fields in the exact format requested
     analysis[normalizedUrl] = problems.map((item) => {
-
       return {
         problemDescription: item.problemDescription || "",
         solutionText: item.solutionText || "",
@@ -1069,7 +1068,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
       throw new Error(`No analysis data found for URL: ${validUrl}`);
     }
 
-    analysisData = dbWebsiteIssues[validUrl] || websiteIssues[validUrl];
+    analysisData = dbWebsiteIssues[validUrl];
 
     // Format the analysis data for response with template literals format
     const analysisResults = analysisData.map((problem, index) => {
