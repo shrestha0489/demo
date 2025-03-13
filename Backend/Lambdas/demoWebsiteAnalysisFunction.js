@@ -3,7 +3,6 @@ import {
   DynamoDBDocumentClient,
   UpdateCommand,
   QueryCommand,
-  ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import {
   ApiGatewayManagementApiClient,
