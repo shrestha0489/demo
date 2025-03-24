@@ -15,8 +15,11 @@
     "@aws-sdk/client-dynamodb": "^3.749.0",
     "@aws-sdk/client-lambda": "^3.749.0",
     "@aws-sdk/lib-dynamodb": "^3.749.0",
+    "aws-sdk": "^2.1692.0",
+    "axios": "^1.8.3",
     "dotenv": "^16.4.7",
-    "ws": "^8.18.0"
+    "uuid": "^11.1.0",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "eslint": "^9.20.0",

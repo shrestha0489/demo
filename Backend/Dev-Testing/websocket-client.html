@@ -1,0 +1,430 @@
+<!doctype html>
+<html>
+  <head>
+    <title>WebSocket Test Client</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      #messages {
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        height: 300px;
+        overflow-y: scroll;
+      }
+      .message {
+        margin-bottom: 10px;
+        padding: 5px;
+      }
+      .sent {
+        background-color: #e6f7ff;
+      }
+      .received {
+        background-color: #f6ffed;
+      }
+      .system {
+        background-color: #f9f0ff;
+      }
+      .error {
+        background-color: #fff2f0;
+        color: #cf1322;
+      }
+      .warning {
+        background-color: #fff7e6;
+        color: #d46b08;
+      }
+      #controls {
+        margin-top: 20px;
+      }
+      .status-connected {
+        color: green;
+        font-weight: bold;
+      }
+      .status-disconnected {
+        color: red;
+      }
+      .status-connecting {
+        color: orange;
+      }
+      .debug-info {
+        margin-top: 20px;
+        border: 1px dotted #ccc;
+        padding: 10px;
+        font-family: monospace;
+        background-color: #f0f0f0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WebSocket Test Client</h1>
+
+    <div>
+      <label for="websocket-url">WebSocket URL:</label>
+      <input
+        type="text"
+        id="websocket-url"
+        value="ws://localhost:3001"
+        style="width: 300px"
+      />
+      <button onclick="connect()">Connect</button>
+      <button onclick="disconnect()">Disconnect</button>
+      <span id="connection-status" class="status-disconnected"
+        >Disconnected</span
+      >
+    </div>
+
+    <div id="controls">
+      <h3>Subscribe to Task</h3>
+      <label for="task-id">Task ID:</label>
+      <input type="text" id="task-id" placeholder="Enter task ID" />
+      <button onclick="subscribe(event)">Subscribe</button>
+      <div>
+        <input type="checkbox" id="auto-reconnect" />
+        <label for="auto-reconnect">Auto reconnect</label>
+      </div>
+    </div>
+
+    <div id="messages"></div>
+
+    <div class="debug-info" id="debug-info">
+      <h3>Debug Information</h3>
+      <div id="debug-content"></div>
+    </div>
+
+    <script>
+      let socket;
+      let reconnectTimer;
+      let reconnectAttempts = 0;
+      const MAX_RECONNECT_DELAY = 5000;
+      let lastSubscribedTaskId = null;
+      let subscriptionTimestamp = null;
+
+      // Track events happening close to subscription
+      const recentEvents = [];
+      const MAX_RECENT_EVENTS = 20;
+
+      function updateDebugInfo() {
+        const debugDiv = document.getElementById("debug-content");
+        debugDiv.innerHTML = `
+          <p><strong>Socket State:</strong> ${socket ? ["Connecting", "Open", "Closing", "Closed"][socket.readyState] : "No Socket"}</p>
+          <p><strong>Last Subscribed:</strong> ${lastSubscribedTaskId || "None"}</p>
+          <p><strong>Subscription Time:</strong> ${subscriptionTimestamp ? new Date(subscriptionTimestamp).toISOString() : "None"}</p>
+          <p><strong>Recent Events:</strong></p>
+          <ul>
+            ${recentEvents.map((e) => `<li>${e}</li>`).join("")}
+          </ul>
+        `;
+      }
+
+      function logEvent(event) {
+        const now = new Date();
+        const timestamp =
+          now.toLocaleTimeString() +
+          "." +
+          now.getMilliseconds().toString().padStart(3, "0");
+        const entry = `[${timestamp}] ${event}`;
+
+        recentEvents.unshift(entry);
+        if (recentEvents.length > MAX_RECENT_EVENTS) {
+          recentEvents.pop();
+        }
+
+        updateDebugInfo();
+      }
+
+      function updateConnectionStatus(status, className) {
+        const statusEl = document.getElementById("connection-status");
+        statusEl.textContent = status;
+        statusEl.className = className || "";
+        logEvent(`Connection status changed to: ${status}`);
+      }
+
+      function connect() {
+        // Clear any existing socket or timers
+        if (socket) {
+          logEvent("Cleaning up existing socket before reconnecting");
+          socket.onclose = null; // Prevent reconnect triggers from old socket
+          socket.close();
+        }
+        if (reconnectTimer) {
+          clearTimeout(reconnectTimer);
+        }
+
+        const url = document.getElementById("websocket-url").value;
+        updateConnectionStatus("Connecting...", "status-connecting");
+
+        logEvent(`Creating new WebSocket to ${url}`);
+        socket = new WebSocket(url);
+
+        socket.onopen = function (e) {
+          updateConnectionStatus("Connected", "status-connected");
+          addMessage("Connected to " + url, "system");
+          reconnectAttempts = 0;
+          logEvent("Socket opened successfully");
+
+          // Auto-resubscribe if needed
+          if (lastSubscribedTaskId) {
+            addMessage(
+              "Auto-resubscribing to task: " + lastSubscribedTaskId,
+              "system"
+            );
+            logEvent(
+              `Preparing to auto-resubscribe to ${lastSubscribedTaskId}`
+            );
+            setTimeout(() => {
+              document.getElementById("task-id").value = lastSubscribedTaskId;
+              subscribe();
+            }, 1000);
+          }
+        };
+
+        socket.onmessage = function (event) {
+          try {
+            const data = JSON.parse(event.data);
+            addMessage("Received: " + event.data, "received");
+            logEvent(`Received message: ${event.data.substring(0, 50)}...`);
+            console.log("Received message:", data);
+
+            // If it's an update for a task, store it
+            if (
+              data.taskId &&
+              (data.message === "Task update" ||
+                data.message === "Subscription successful")
+            ) {
+              addMessage(`Task ${data.taskId} update received`, "system");
+
+              // Check if this is a subscription success
+              if (data.message === "Subscription successful") {
+                // Start monitoring for unexpected disconnects
+                monitorConnectionAfterSubscription();
+              }
+            }
+          } catch (e) {
+            addMessage("Error parsing message: " + event.data, "error");
+            logEvent(`Error parsing message: ${e.message}`);
+          }
+        };
+
+        socket.onclose = function (event) {
+          const autoReconnect =
+            document.getElementById("auto-reconnect").checked;
+
+          if (event.wasClean) {
+            addMessage(
+              `Connection closed cleanly, code=${event.code} reason=${event.reason || "No reason provided"}`,
+              "system"
+            );
+            logEvent(
+              `Clean close: ${event.code}, reason: ${event.reason || "None"}`
+            );
+
+            // Check if this was soon after subscription
+            if (
+              subscriptionTimestamp &&
+              Date.now() - subscriptionTimestamp < 5000
+            ) {
+              addMessage(
+                `WARNING: Connection closed shortly after subscription!`,
+                "warning"
+              );
+              logEvent(
+                `CRITICAL: Disconnect happened ${Date.now() - subscriptionTimestamp}ms after subscription`
+              );
+            }
+          } else {
+            addMessage(
+              `Connection died unexpectedly, code=${event.code}`,
+              "error"
+            );
+            logEvent(`Unexpected close: ${event.code}`);
+          }
+
+          updateConnectionStatus("Disconnected", "status-disconnected");
+
+          // Attempt to reconnect if auto-reconnect is enabled and not a normal closure
+          if (autoReconnect && event.code !== 1000) {
+            const delay = Math.min(
+              1000 * Math.pow(1.5, reconnectAttempts),
+              MAX_RECONNECT_DELAY
+            );
+            reconnectAttempts++;
+
+            addMessage(
+              `Reconnecting in ${delay / 1000} seconds... (Attempt ${reconnectAttempts})`,
+              "system"
+            );
+            logEvent(
+              `Scheduling reconnect in ${delay}ms (attempt ${reconnectAttempts})`
+            );
+
+            reconnectTimer = setTimeout(() => {
+              connect();
+            }, delay);
+          }
+        };
+
+        socket.onerror = function (error) {
+          addMessage("WebSocket error occurred", "error");
+          logEvent(`WebSocket error: ${error}`);
+          console.error("WebSocket error:", error);
+        };
+
+        updateDebugInfo();
+      }
+
+      function monitorConnectionAfterSubscription() {
+        logEvent("Starting post-subscription monitoring");
+
+        // Take snapshots of the connection state at intervals
+        for (let i = 1; i <= 10; i++) {
+          setTimeout(() => {
+            if (socket) {
+              logEvent(
+                `Monitor check ${i}: Socket state is ${["Connecting", "Open", "Closing", "Closed"][socket.readyState]}`
+              );
+            } else {
+              logEvent(`Monitor check ${i}: Socket is null`);
+            }
+          }, i * 500); // Check every 500ms
+        }
+      }
+
+      function disconnect() {
+        if (reconnectTimer) {
+          clearTimeout(reconnectTimer);
+          reconnectTimer = null;
+        }
+
+        if (socket) {
+          addMessage("Disconnecting...", "system");
+          logEvent("Manual disconnect initiated");
+          socket.onclose = null;
+          socket.close(1000, "User initiated disconnect");
+          socket = null;
+        }
+
+        updateDebugInfo();
+      }
+
+      function subscribe(event) {
+        // Prevent form submission if called from button
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation(); // Also stop event bubbling
+        }
+
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
+          alert("Please connect to the WebSocket server first.");
+          logEvent("Subscribe failed: Socket not open");
+          return;
+        }
+
+        const taskId = document.getElementById("task-id").value;
+        if (!taskId) {
+          alert("Please enter a task ID.");
+          logEvent("Subscribe failed: No task ID");
+          return;
+        }
+
+        lastSubscribedTaskId = taskId;
+        subscriptionTimestamp = Date.now();
+        localStorage.setItem("lastSubscribedTaskId", taskId);
+
+        const message = {
+          action: "subscribe",
+          taskId: taskId,
+        };
+
+        try {
+          logEvent(`Sending subscription for ${taskId}`);
+          socket.send(JSON.stringify(message));
+          addMessage("Sent: " + JSON.stringify(message), "sent");
+
+          // Check connection state after subscription
+          setTimeout(() => {
+            if (socket) {
+              logEvent(
+                `Socket state 100ms after subscription: ${["Connecting", "Open", "Closing", "Closed"][socket.readyState]}`
+              );
+            } else {
+              logEvent(`Socket is null 100ms after subscription`);
+            }
+          }, 100);
+
+          // Check again after a bit longer
+          setTimeout(() => {
+            if (socket) {
+              logEvent(
+                `Socket state 500ms after subscription: ${["Connecting", "Open", "Closing", "Closed"][socket.readyState]}`
+              );
+            } else {
+              logEvent(`Socket is null 500ms after subscription`);
+            }
+          }, 500);
+        } catch (error) {
+          addMessage("Error sending message: " + error.message, "error");
+          logEvent(`Error sending subscription: ${error.message}`);
+        }
+
+        updateDebugInfo();
+      }
+
+      function addMessage(text, type) {
+        const messagesDiv = document.getElementById("messages");
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("message", type);
+
+        // Add timestamp
+        const now = new Date();
+        const timestamp =
+          now.toLocaleTimeString() +
+          "." +
+          now.getMilliseconds().toString().padStart(3, "0");
+
+        messageElement.textContent = `[${timestamp}] ${text}`;
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }
+
+      // Check for saved task ID from previous session
+      window.onload = function () {
+        const autoReconnect = document.getElementById("auto-reconnect").checked;
+        if (autoReconnect) {
+          const savedTaskId = localStorage.getItem("lastSubscribedTaskId");
+          if (savedTaskId) {
+            document.getElementById("task-id").value = savedTaskId;
+            lastSubscribedTaskId = savedTaskId;
+            addMessage(
+              "Found previously subscribed task ID: " + savedTaskId,
+              "system"
+            );
+            logEvent(`Loaded saved task ID: ${savedTaskId}`);
+          }
+
+          // Connect automatically
+          setTimeout(connect, 500);
+
+          updateDebugInfo();
+        }
+      };
+
+      // Additional event listeners to detect potential issues
+      window.addEventListener("visibilitychange", function () {
+        logEvent(`Page visibility changed: ${document.visibilityState}`);
+      });
+
+      // This captures page events that might be related to navigation
+      window.addEventListener("pagehide", function () {
+        logEvent("pagehide event triggered");
+      });
+
+      window.addEventListener("popstate", function () {
+        logEvent("popstate event triggered (navigation)");
+      });
+    </script>
+  </body>
+</html>

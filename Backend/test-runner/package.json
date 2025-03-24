@@ -1,0 +1,17 @@
+{
+    "name": "test-runner",
+    "version": "1.0.0",
+    "description": "Integration test runner for LocalStack",
+    "main": "tests/integration.test.js",
+    "scripts": {
+        "test": "jest --detectOpenHandles --forceExit"
+    },
+    "dependencies": {
+        "aws-sdk": "^2.1232.0",
+        "axios": "^1.3.4",
+        "test-runner": "file:"
+    },
+    "devDependencies": {
+        "jest": "^29.6.1"
+    }
+}
