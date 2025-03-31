@@ -37,23 +37,6 @@ services:
       retries: 5
       start_period: 30s  # Give it 30 seconds before starting health checks
 
-  ### Test Runner (Node.js + Jest) ###
-  test-runner:
-    build: ./test-runner
-    depends_on:
-      localstack:
-        condition: service_healthy
-    networks:
-      - lambda-network
-    environment:
-      AWS_ENDPOINT: http://localstack:4566
-      AWS_REGION: us-east-1
-      AWS_ACCESS_KEY_ID: test
-      AWS_SECRET_ACCESS_KEY: test
-    volumes:
-      - "./tests:/app/tests"
-      - "./src:/app/src" # Added source code for reference during testing
-    command: ["tail", "-f", "/dev/null"]
 
 networks:
   lambda-network:
