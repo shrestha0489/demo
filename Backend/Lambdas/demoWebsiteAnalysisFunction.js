@@ -871,15 +871,10 @@ export const sendMessageToClient = async (connectionId, message, endpoint) => {
   };
 
   try {
-    // uncomment below code while testing with localstack
-    // try {
-    //   await axios.post("http://host.docker.internal:3002/broadcast", {
-    //     taskId: message.taskId,
-    //     ...message,
-    //   });
-    // } catch (error) {
-    //   console.warn("Failed to send broadcast via HTTP, continuing:", error.message);
-    // }
+    await axios.post("http://host.docker.internal:3002/broadcast", {
+      taskId: message.taskId,
+      ...message,
+    });
     await client.send(new PostToConnectionCommand(params));
     console.log(`Message sent to connection: ${connectionId}`);
   } catch (error) {
