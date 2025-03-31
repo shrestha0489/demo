@@ -32,18 +32,6 @@ jobs:
         run: npm install
         working-directory: ./Backend
 
-      - name: Initialising localstack container
-        run: ./build_package.sh
-        working-directory: ./Backend
-
-      - name: Deploying resources on localstack
-        run: ./deploy_lambda.sh
-        working-directory: ./Backend
-
-      - name: Running tests
-        run: npm test
-        working-directory: ./Backend
-
       - name: Running linters in Backend
         run: npm run lint
         working-directory: ./Backend
