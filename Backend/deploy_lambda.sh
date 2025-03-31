@@ -2,6 +2,7 @@
 
 set -e  # Exit immediately on error
 export AWS_PAGER=""  # Disable AWS CLI pager to prevent terminal hanging
+export AWS_DEFAULT_REGION="us-east-1"  # Add this line to set a default region
 
 # Install jq for macOS using Homebrew (without -y flag which isn't used with brew)
 which jq > /dev/null || brew install jq
