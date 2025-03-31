@@ -20,7 +20,7 @@ echo "🚀 Building Lambda deployment package..."
 npm install
 
 # Create ZIP package
-zip -r demo.zip . -x ".git/*" "test-runner/*" "Dev-Testing/*" "deploy_lambda.sh" "iam_setup.sh" "lambda_permissions.sh"
+zip -r demo.zip . -x ".git/*" "Dev-Testing/*" "deploy_lambda.sh" "iam_setup.sh" "lambda_permissions.sh"
 
 echo "✅ Package created: demo.zip"
 

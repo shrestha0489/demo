@@ -871,7 +871,7 @@ export const sendMessageToClient = async (connectionId, message, endpoint) => {
   };
 
   try {
-    //uncomment below code while testing with localstack
+    // uncomment below code while testing with localstack
     // try {
     //   await axios.post("http://host.docker.internal:3002/broadcast", {
     //     taskId: message.taskId,

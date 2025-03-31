@@ -1,0 +1,33 @@
+1. go to ./Lamdas/demoWebsiteAnalysisFunction 
+
+2. inside function "sendMessageToClient" uncomment the try catch block that is sending 
+info to local docker container
+```
+  try {
+    await axios.post("http://host.docker.internal:3002/broadcast", {
+      taskId: message.taskId,
+      ...message,
+    });
+  } catch (error) {
+    console.warn("Failed to send broadcast via HTTP, continuing:", error.message);
+  }
+```
+
+and comment out 
+```
+await client.send(new PostToConnectionCommand(params));
+```
+
+3. then build this folder to initialise project for docker container
+run 
+```
+./build_package.sh
+```
+
+4. then deploy required resources with defined configurations on localstack 
+run 
+```
+./deploy_lambda.sh
+```
+
+5. then run test
