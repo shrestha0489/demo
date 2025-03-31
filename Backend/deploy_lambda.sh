@@ -2,7 +2,9 @@
 
 set -e  # Exit immediately on error
 export AWS_PAGER=""  # Disable AWS CLI pager to prevent terminal hanging
-export AWS_DEFAULT_REGION="us-east-1"  # Add this line to set a default region
+export AWS_DEFAULT_REGION="us-east-1"  # Set default region
+export AWS_ACCESS_KEY_ID="test"        # Set dummy access key for LocalStack
+export AWS_SECRET_ACCESS_KEY="test"    # Set dummy secret key for LocalStack
 
 # Install jq for macOS using Homebrew (without -y flag which isn't used with brew)
 which jq > /dev/null || brew install jq
