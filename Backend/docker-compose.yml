@@ -1,0 +1,43 @@
+services:
+  ### LocalStack - Simulates AWS Services ###
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack_dev
+    user: root
+    ports:
+      - "4566:4566" # Main LocalStack endpoint
+    networks:
+      - lambda-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - SERVICES=lambda,dynamodb,apigateway,iam,events
+      - DEFAULT_REGION=us-east-1
+      - DEBUG=1
+      - LAMBDA_EXECUTOR=docker
+      - LAMBDA_REMOTE_DOCKER=false
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - PERSISTENCE=1
+      - INIT_SCRIPTS_PATH=/docker-entrypoint-initaws.d
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./volume:/var/lib/localstack"
+      - "./init-scripts:/docker-entrypoint-initaws.d"
+      - "./deploy_lambda.sh:/deploy_lambda.sh"
+      - "./lambda_config.json:/lambda_config.json"
+      - "./demo.zip:/chat_app.zip" # Maps your local demo.zip to /chat_app.zip inside container
+      - "./iam_setup.sh:/docker-entrypoint-initaws.d/01_iam_setup.sh"
+      - "./lambda_permissions.sh:/docker-entrypoint-initaws.d/02_lambda_permissions.sh"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s  # Give it 30 seconds before starting health checks
+
+
+networks:
+  lambda-network:
+    driver: bridge

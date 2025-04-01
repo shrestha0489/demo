@@ -8,14 +8,15 @@ import {
   ApiGatewayManagementApiClient,
   PostToConnectionCommand,
 } from "@aws-sdk/client-apigatewaymanagementapi";
+import axios from 'axios';
 
 // Configuration from environment variables
 const CONFIG = {
   WEBSOCKET_ENDPOINT:
     process.env.WEBSOCKET_ENDPOINT ||
     "wss://he7ifebjve.execute-api.us-east-1.amazonaws.com/production/",
-  MAX_RETRIES: parseInt(process.env.MAX_RETRIES || "3"),
-  RETRY_DELAY: parseInt(process.env.RETRY_DELAY || "1000"),
+  MAX_RETRIES: parseInt(process.env.MAX_RETRIES || "20"),
+  RETRY_DELAY: parseInt(process.env.RETRY_DELAY || "20"),
   CONNECTIONS_TABLE:
     process.env.CONNECTIONS_TABLE || "demoWebsiteAnalysisResults",
   ANALYSIS_TABLE: process.env.ANALYSIS_TABLE || "demoWebsiteAnalysisResults",
@@ -870,6 +871,10 @@ export const sendMessageToClient = async (connectionId, message, endpoint) => {
   };
 
   try {
+    await axios.post("http://host.docker.internal:3002/broadcast", {
+      taskId: message.taskId,
+      ...message,
+    });
     await client.send(new PostToConnectionCommand(params));
     console.log(`Message sent to connection: ${connectionId}`);
   } catch (error) {
@@ -1070,7 +1075,6 @@ export const demoWebsiteAnalysisFunction = async (event) => {
         timestamp: new Date().toISOString(),
       };
     });
-
 
     // Final update in DynamoDB with completed status and results
     const finalUpdateSuccess = await updateTaskStatus(taskId, "completed", {
