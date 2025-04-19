@@ -668,6 +668,7 @@ const normalizeUrl = (url) => {
   return url
     .replace(/^https?:\/\//, "") // Remove protocol (http:// or https://)
     .replace(/^www\./, "") // Remove "www." if it exists
+    .replace(/\/+$/, "") // Remove trailing slashes
     .toLowerCase(); // Convert the URL to lowercase
 };
 
