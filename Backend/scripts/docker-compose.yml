@@ -25,11 +25,11 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "./volume:/var/lib/localstack"
       - "./init-scripts:/docker-entrypoint-initaws.d"
-      - "./deploy_lambda.sh:/deploy_lambda.sh"
-      - "./lambda_config.json:/lambda_config.json"
-      - "./demo.zip:/chat_app.zip" # Maps your local demo.zip to /chat_app.zip inside container
-      - "./iam_setup.sh:/docker-entrypoint-initaws.d/01_iam_setup.sh"
-      - "./lambda_permissions.sh:/docker-entrypoint-initaws.d/02_lambda_permissions.sh"
+      - "./scripts/deploy_lambda.sh:/deploy_lambda.sh"
+      - "./scripts/lambda_config.json:/lambda_config.json"
+      - "./scripts/demo.zip:/chat_app.zip" # Maps your local demo.zip to /chat_app.zip inside container
+      - "./scripts/iam_setup.sh:/docker-entrypoint-initaws.d/01_iam_setup.sh"
+      - "./scripts/lambda_permissions.sh:/docker-entrypoint-initaws.d/02_lambda_permissions.sh"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
       interval: 15s

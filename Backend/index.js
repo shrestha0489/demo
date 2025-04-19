@@ -1,8 +1,7 @@
-
-import { addAnalysisToDB } from "./Lambdas/demoAddAnalysisToDB.js";
-import { demoWebsiteAnalysisFunction } from "./Lambdas/demoWebsiteAnalysisFunction.js";
-import { handleMessage } from "./Lambdas/handleMessage.js";
-import { initiateAnalysis } from "./Lambdas/initiateAnalysis.js";
+import { addAnalysisToDB } from "./src/demoAddAnalysisToDB.js";
+import { demoWebsiteAnalysisFunction } from "./src/demoWebsiteAnalysisFunction.js";
+import { handleMessage } from "./src/handleMessage.js";
+import { initiateAnalysis } from "./src/initiateAnalysis.js";
 
 export const startAnalysis = async (event) => {
   return initiateAnalysis(event);

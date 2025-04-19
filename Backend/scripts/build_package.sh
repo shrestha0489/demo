@@ -16,14 +16,16 @@ rm -rf demo.zip
 
 echo "🚀 Building Lambda deployment package..."
 
+cd ..
 # Ensure dependencies are installed
 npm install
 
 # Create ZIP package
-zip -r demo.zip . -x ".git/*" "Dev-Testing/*" "deploy_lambda.sh" "iam_setup.sh" "lambda_permissions.sh"
+zip -r demo.zip .
 
 echo "✅ Package created: demo.zip"
 
+cd scripts
 echo "🚀 Deploying Compose..."
 
 # Start Docker Compose
