@@ -1,1 +1,8 @@
 node_modules
+.DS_Store
+volume
+scripts/volume
+scripts/init-scripts
+
+demo.zip
+scripts/scripts

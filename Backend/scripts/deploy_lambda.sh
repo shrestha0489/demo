@@ -32,7 +32,18 @@ TABLE_CONFIGS=$(node -e "
 for table in $(echo "$TABLE_CONFIGS" | jq -c '.[]'); do
   TABLE_NAME=$(echo $table | jq -r '.TableName')
   
-  echo "Creating table: $TABLE_NAME"
+  echo "Processing table: $TABLE_NAME"
+
+  # Check if table exists and delete if it does
+  if aws --endpoint-url=http://localhost:4566 dynamodb describe-table --table-name "$TABLE_NAME" 2>/dev/null; then
+    echo "Table $TABLE_NAME exists. Deleting it first..."
+    aws --endpoint-url=http://localhost:4566 dynamodb delete-table --table-name "$TABLE_NAME"
+    
+    # Wait for the table to be deleted
+    echo "Waiting for table deletion to complete..."
+    aws --endpoint-url=http://localhost:4566 dynamodb wait table-not-exists --table-name "$TABLE_NAME"
+    echo "Table $TABLE_NAME deleted successfully."
+  fi
   
   # Extract key schema
   KEY_SCHEMA=$(echo $table | jq '.KeySchema')
@@ -41,6 +52,7 @@ for table in $(echo "$TABLE_CONFIGS" | jq -c '.[]'); do
   ATTRIBUTE_DEFINITIONS=$(echo $table | jq '.AttributeDefinitions')
   
   # Create the table
+  echo "Creating table: $TABLE_NAME"
   aws --endpoint-url=http://localhost:4566 --no-cli-pager dynamodb create-table \
     --table-name "$TABLE_NAME" \
     --attribute-definitions "$ATTRIBUTE_DEFINITIONS" \
@@ -59,7 +71,7 @@ if [[ ! -f "$LAMBDA_CONFIG_FILE" ]]; then
 fi
 
 # Check if demo.zip exists
-if [[ ! -f "demo.zip" ]]; then
+if [[ ! -f "../demo.zip" ]]; then
   echo "❌ Lambda function package 'demo.zip' not found!"
   exit 1
 fi
@@ -78,7 +90,7 @@ for row in $(jq -c '.[]' "$LAMBDA_CONFIG_FILE"); do
       --runtime nodejs18.x \
       --role arn:aws:iam::000000000000:role/lambda-execution-role \
       --handler "$HANDLER_PATH" \
-      --zip-file fileb://demo.zip \
+      --zip-file fileb://../demo.zip \
       --timeout 600 \
       --environment "Variables={CONNECTIONS_TABLE=demoWebsiteAnalysisResults,ANALYSIS_TABLE=demoWebsiteAnalysisResults,WEBSITE_ANALYSIS_TABLE=demoWebsiteAnalysis,API_ENDPOINT=http://localhost:4566}" \
       || { echo "Error deploying Lambda: $LAMBDA_NAME"; exit 1; }
