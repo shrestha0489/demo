@@ -16,6 +16,17 @@ function ProblemModal({ problem, show, handleClose }) {
       </Modal.Header>
       <Modal.Body>
         <div>
+          <div style={{ marginBottom: "9px" }}>
+            URL:{" "}
+            <a
+              onClick={(e) => e.stopPropagation()}
+              href={problem.path}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {problem.path}
+            </a>
+          </div>
           <h5>Problem Description</h5>
           <Markdown>{problem.problemDescription}</Markdown>
           <h5>Proposed Solution</h5>
