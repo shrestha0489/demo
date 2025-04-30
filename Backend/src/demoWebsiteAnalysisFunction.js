@@ -21,7 +21,7 @@ const CONFIG = {
     process.env.CONNECTIONS_TABLE || "demoWebsiteAnalysisResults",
   ANALYSIS_TABLE: process.env.ANALYSIS_TABLE || "demoWebsiteAnalysisResults",
   WEBSITE_ANALYSIS_TABLE:
-    process.env.WEBSITE_ANALYSIS_TABLE || "demoWebsiteAnalysis",
+    process.env.WEBSITE_ANALYSIS_TABLE || "demoWebsiteAnalysisNew",
 };
 
 const websiteIssues = {
@@ -669,7 +669,6 @@ const normalizeUrl = (url) => {
     .replace(/^https?:\/\//, "") // Remove protocol (http:// or https://)
     .replace(/^www\./, "") // Remove "www." if it exists
     .replace(/\/+$/, "") // Remove trailing slashes
-    .toLowerCase(); // Convert the URL to lowercase
 };
 
 // Helper function to fetch analysis data for a URL from DynamoDB
