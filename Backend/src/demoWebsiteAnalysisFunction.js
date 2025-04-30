@@ -667,7 +667,6 @@ const dynamoDb = DynamoDBDocumentClient.from(client);
 const normalizeUrl = (url) => {
   return url
     .replace(/^https?:\/\//, "") // Remove protocol (http:// or https://)
-    .replace(/^www\./, "") // Remove "www." if it exists
     .replace(/\/+$/, "") // Remove trailing slashes
 };
 
@@ -702,16 +701,25 @@ async function fetchWebsiteAnalysis(url) {
 
     // Create return object with template literals format for strings
     let analysis = {};
-    const problems = result.Items[0].problems;
-    console.log("actual problems: ", problems);
+
+    let results = []
+
+    result.Items.forEach(item => {
+      item.problems.forEach(problem => {
+        results.push({
+          problemDescription: problem.problemDescription || "",
+          solutionText: problem.solutionText || "",
+          impactText: problem.impactText || "",
+          path: `https://${item.url}${item.path}`,
+        });
+      })
+    })
+
+
+
+    console.log("actual problems: ", results);
     // Format the data with the fields in the exact format requested
-    analysis[normalizedUrl] = problems.map((item) => {
-      return {
-        problemDescription: item.problemDescription || "",
-        solutionText: item.solutionText || "",
-        impactText: item.impactText || "",
-      };
-    });
+    analysis[normalizedUrl] = results;
 
     return analysis;
   } catch (error) {
@@ -1065,16 +1073,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
     analysisData = dbWebsiteIssues[validUrl];
 
     // Format the analysis data for response with template literals format
-    const analysisResults = analysisData.map((problem, index) => {
-      return {
-        // Just return the strings directly - they will be enclosed in template literals on client side
-        problemDescription: `${problem.problemDescription}`,
-        solutionText: `${problem.solutionText}`,
-        impactText: `${problem.impactText}`,
-        problemId: `problem-${index + 1}`,
-        timestamp: new Date().toISOString(),
-      };
-    });
+    const analysisResults = analysisData;
 
     // Final update in DynamoDB with completed status and results
     const finalUpdateSuccess = await updateTaskStatus(taskId, "completed", {
