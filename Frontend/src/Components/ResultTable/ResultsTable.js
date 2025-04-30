@@ -100,6 +100,7 @@ const ResultsTable = ({ data }) => {
                   <th>Problem Description</th>
                   <th>Solution</th>
                   <th>Impact</th>
+                  <th>URL</th>
                 </tr>
               </thead>
               <tbody>
@@ -125,6 +126,18 @@ const ResultsTable = ({ data }) => {
                       <td>
                         <div className={styles.impactCell}>
                           {trimText(problem.impactText)}
+                        </div>
+                      </td>
+                      <td>
+                        <div className={styles.impactCell}>
+                          <a
+                            onClick={(e) => e.stopPropagation()}
+                            href={problem.path}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {problem.path}
+                          </a>
                         </div>
                       </td>
                     </tr>
