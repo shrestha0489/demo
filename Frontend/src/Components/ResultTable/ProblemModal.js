@@ -1,9 +1,25 @@
 import React from "react";
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types"; 
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import styles from "./ProblemModal.module.css";
 import Markdown from "react-markdown";
+import rehypeRaw from 'rehype-raw';
+
+const CustomLink = ({node, href, children, title, ...props}) => {
+  return (
+    <a
+      href={href}
+      title={title}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+      {...props}
+    >
+      {children}
+    </a>
+  );
+};
 
 function ProblemModal({ problem, show, handleClose }) {
   if (!problem) return null;
@@ -28,11 +44,32 @@ function ProblemModal({ problem, show, handleClose }) {
             </a>
           </div>
           <h5>Problem Description</h5>
-          <Markdown>{problem.problemDescription}</Markdown>
+          <Markdown 
+            rehypePlugins={[rehypeRaw]} 
+            components={{
+              a: CustomLink
+            }}
+          >
+            {problem.problemDescription}
+          </Markdown>
           <h5>Proposed Solution</h5>
-          <Markdown>{problem.solutionText}</Markdown>
+          <Markdown 
+            rehypePlugins={[rehypeRaw]} 
+            components={{
+              a: CustomLink
+            }}
+          >
+            {problem.solutionText}
+          </Markdown>
           <h5>Problem Impact</h5>
-          <Markdown>{problem.impactText}</Markdown>
+          <Markdown 
+            rehypePlugins={[rehypeRaw]} 
+            components={{
+              a: CustomLink
+            }}
+          >
+            {problem.impactText}
+          </Markdown>
         </div>
       </Modal.Body>
       <Modal.Footer>
@@ -47,6 +84,7 @@ function ProblemModal({ problem, show, handleClose }) {
 // Add PropTypes validation
 ProblemModal.propTypes = {
   problem: PropTypes.shape({
+    path: PropTypes.string,
     problemDescription: PropTypes.string,
     solutionText: PropTypes.string,
     impactText: PropTypes.string,
