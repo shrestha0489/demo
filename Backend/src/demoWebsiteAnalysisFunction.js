@@ -698,6 +698,7 @@ async function fetchWebsiteAnalysis(url) {
     console.log(
       `Found ${result.Items.length} analysis items for URL: ${normalizedUrl}`,
     );
+    console.log("results:",JSON.stringify(result.Items));
 
     // Create return object with template literals format for strings
     let analysis = {};
@@ -711,6 +712,7 @@ async function fetchWebsiteAnalysis(url) {
           solutionText: problem.solutionText || "",
           impactText: problem.impactText || "",
           path: `https://${item.url}${item.path}`,
+          variantHTML: problem.variantHTML
         });
       })
     })

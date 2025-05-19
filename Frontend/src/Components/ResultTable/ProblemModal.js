@@ -70,6 +70,15 @@ function ProblemModal({ problem, show, handleClose }) {
           >
             {problem.impactText}
           </Markdown>
+          <h5>Solution HTML</h5>
+          <Markdown 
+            rehypePlugins={[rehypeRaw]} 
+            components={{
+              a: CustomLink
+            }}
+          >
+            {`\`\`\`html\n${problem.variantHTML}\n\`\`\``}
+          </Markdown>
         </div>
       </Modal.Body>
       <Modal.Footer>
@@ -88,6 +97,7 @@ ProblemModal.propTypes = {
     problemDescription: PropTypes.string,
     solutionText: PropTypes.string,
     impactText: PropTypes.string,
+    variantHTML: PropTypes.string,
   }),
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
