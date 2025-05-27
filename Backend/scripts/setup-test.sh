@@ -86,8 +86,8 @@ fi
 
 # 6. Run tests
 echo -e "\n${YELLOW}Running tests...${NC}"
-echo -e "${YELLOW}Running: ENV=localtesting npm test${NC}"
-ENV=localtesting npm test
+echo -e "${YELLOW}Running: ENV=localtesting npm run test:local${NC}"
+ENV=localtesting npm run test:local
 
 if [ $? -ne 0 ]; then
   echo -e "${RED}Tests failed! See errors above.${NC}"
