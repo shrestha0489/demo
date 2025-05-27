@@ -18,8 +18,8 @@ const CONFIG = {
   MAX_RETRIES: parseInt(process.env.MAX_RETRIES || "20"),
   RETRY_DELAY: parseInt(process.env.RETRY_DELAY || "20"),
   CONNECTIONS_TABLE:
-    process.env.CONNECTIONS_TABLE || "demoWebsiteAnalysisResults",
-  ANALYSIS_TABLE: process.env.ANALYSIS_TABLE || "demoWebsiteAnalysisResults",
+    process.env.CONNECTIONS_TABLE || "demoWebsiteAnalysis",
+  ANALYSIS_TABLE: process.env.CONNECTIONS_TABLE || "demoWebsiteAnalysis",
   WEBSITE_ANALYSIS_TABLE:
     process.env.WEBSITE_ANALYSIS_TABLE || "demoWebsiteAnalysisNew",
 };
@@ -754,8 +754,7 @@ async function findConnectionIdForTask(taskId) {
   const maxAttempts = CONFIG.MAX_RETRIES || 3;
   let currentDelay = initialDelay;
 
-  // Add detailed logging for debugging
-  console.log(`Starting to look for connectionId for taskId: ${taskId}`);
+  console.log(`Starting to look for connectionId for url: ${url}, taskId: ${taskId}`);
   console.log(
     `Will attempt ${maxAttempts} times with delays between ${initialDelay}ms and ${maxDelay}ms`,
   );
@@ -764,31 +763,39 @@ async function findConnectionIdForTask(taskId) {
     try {
       const params = {
         TableName: CONFIG.CONNECTIONS_TABLE,
-        KeyConditionExpression: "taskId = :taskId",
-        ExpressionAttributeValues: { ":taskId": taskId },
-        ConsistentRead: true, // Enable strongly consistent reads
+        KeyConditionExpression: "#urlAttr = :url AND begins_with(taskId_connectionId, :taskIdPrefix)",
+        ExpressionAttributeNames: {
+          "#urlAttr": "url"
+        },
+        ExpressionAttributeValues: {
+          ":url": url,
+          ":taskIdPrefix": `${taskId}$$$`
+        },
+        ConsistentRead: true,
       };
 
       console.log(
         `Attempt ${attempt + 1}/${maxAttempts} to find connectionId...`,
       );
       const result = await dynamoDb.send(new QueryCommand(params));
+      console.log("result: ",result);
 
-      if (
-        result.Items &&
-        result.Items.length > 0 &&
-        result.Items[0].connectionId !== undefined
-      ) {
-        const connectionId = result.Items[0].connectionId;
-        console.log(
-          `Successfully found connectionId: ${connectionId} for taskId: ${taskId}`,
-        );
-        return connectionId;
+      if (result.Items && result.Items.length > 0) {
+        // Extract connectionId from the composite sort key (taskId$$$connectionId)
+        const sk = result.Items[0].taskId_connectionId;
+        const connectionId = sk.split('$$$')[1];
+
+        if (connectionId && connectionId !== taskId) {
+          console.log(
+            `Successfully found connectionId: ${connectionId} for url: ${url}, taskId: ${taskId}`,
+          );
+          return connectionId;
+        }
       }
 
       // No connection found, prepare for retry
       console.log(
-        `No connection found for taskId ${taskId} on attempt ${attempt + 1}`,
+        `No connection found for url: ${url}, taskId: ${taskId} on attempt ${attempt + 1}`,
       );
 
       if (attempt < maxAttempts - 1) {
@@ -804,7 +811,7 @@ async function findConnectionIdForTask(taskId) {
       }
     } catch (error) {
       console.error(
-        `Error querying DynamoDB for taskId ${taskId} (attempt ${attempt + 1}):`,
+        `Error querying DynamoDB for url: ${url}, taskId: ${taskId} (attempt ${attempt + 1}):`,
         error,
       );
 
@@ -822,10 +829,10 @@ async function findConnectionIdForTask(taskId) {
   }
 
   console.log(
-    `Failed to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`,
+    `Failed to find connectionId for url: ${url}, taskId: ${taskId} after ${maxAttempts} attempts`,
   );
   throw new Error(
-    `Unable to find connectionId for taskId ${taskId} after ${maxAttempts} attempts`,
+    `Unable to find connectionId for url: ${url}, taskId: ${taskId} after ${maxAttempts} attempts`,
   );
 }
 
@@ -901,10 +908,12 @@ export const sendMessageToClient = async (connectionId, message, endpoint) => {
 };
 
 // Helper function to update task status in DynamoDB
-export const updateTaskStatus = async (taskId, status, data = {}) => {
-  console.log("Updating task status in DynamoDB:", taskId, status, data);
+export const updateTaskStatus = async (url, connectionId, taskId, status, data = {}) => {
+  console.log("Updating task status in DynamoDB:", url, taskId, connectionId, status, data);
 
   const timestamp = new Date().toISOString();
+  const sortKey = `${taskId}$$$${connectionId}`;
+  
   const updateExpression = ["set #status = :status", "#timestamp = :timestamp"];
   const expressionAttributeValues = {
     ":status": status,
@@ -928,7 +937,10 @@ export const updateTaskStatus = async (taskId, status, data = {}) => {
 
   const params = {
     TableName: CONFIG.ANALYSIS_TABLE,
-    Key: { taskId },
+    Key: { 
+      url: url,
+      taskId_connectionId: sortKey
+    },
     UpdateExpression: updateExpression.join(", "),
     ExpressionAttributeNames: expressionAttributeNames,
     ExpressionAttributeValues: expressionAttributeValues,
@@ -936,10 +948,10 @@ export const updateTaskStatus = async (taskId, status, data = {}) => {
 
   try {
     await dynamoDb.send(new UpdateCommand(params));
-    console.log(`Task ${taskId} updated successfully in DynamoDB`);
+    console.log(`Task ${taskId} for URL ${url} updated successfully in DynamoDB`);
     return true;
   } catch (error) {
-    console.error("Error updating task status in DynamoDB:", error);
+    console.error(`Error updating task status in DynamoDB for URL ${url}, taskId ${taskId}:`, error);
     throw error;
   }
 };
@@ -974,8 +986,7 @@ export const sendProgressUpdate = async (
 
 // Enhanced Lambda handler with comprehensive error handling
 export const demoWebsiteAnalysisFunction = async (event) => {
-  let taskId;
-  let connectionId;
+  let taskId, connectionId, url;
 
   try {
     console.log(
@@ -984,13 +995,14 @@ export const demoWebsiteAnalysisFunction = async (event) => {
     );
     const parsedEvent = parseEvent(event);
     taskId = parsedEvent.taskId;
+    url = parsedEvent.url;
 
     // Find the associated WebSocket connection
-    connectionId = await findConnectionIdForTask(taskId);
+    connectionId = await findConnectionIdForTask(taskId, url);
     console.log(`Found connectionId ${connectionId} for taskId ${taskId}`);
 
     // Validate URL
-    const validUrl = await validateUrl(parsedEvent.url);
+    const validUrl = await validateUrl(url);
     if (!validUrl) {
       // Send error message through WebSocket if URL doesn't exist
       if (connectionId) {
@@ -1008,7 +1020,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
       }
 
       // Update task status to error
-      await updateTaskStatus(taskId, "error", {
+      await updateTaskStatus(url,connectionId,taskId, "error", {
         error: "Client doesn't exist",
       });
 
@@ -1078,7 +1090,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
     const analysisResults = analysisData;
 
     // Final update in DynamoDB with completed status and results
-    const finalUpdateSuccess = await updateTaskStatus(taskId, "completed", {
+    const finalUpdateSuccess = await updateTaskStatus(url,connectionId,taskId, "completed", {
       problems: analysisResults,
     });
 
@@ -1117,7 +1129,7 @@ export const demoWebsiteAnalysisFunction = async (event) => {
 
     if (taskId) {
       try {
-        await updateTaskStatus(taskId, "error", { error: error.message });
+        await updateTaskStatus(url,connectionId,taskId, "error", { error: error.message });
 
         if (connectionId) {
           await sendMessageToClient(
