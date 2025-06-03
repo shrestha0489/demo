@@ -56,12 +56,13 @@ const AnalyzePage = () => {
   }, []);
 
   const subscribeToTask = useCallback(
-    (taskId) => {
+    (taskId,url) => {
       if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
         wsConnection.send(
           JSON.stringify({
             action: "subscribe",
             taskId: taskId,
+            url:url
           }),
         );
       }
@@ -141,7 +142,7 @@ const AnalyzePage = () => {
         currentStep: "Initializing analysis...",
       });
 
-      subscribeToTask(taskId);
+      subscribeToTask(taskId,url);
       setUrl("");
     } catch (err) {
       const errorMessage =
