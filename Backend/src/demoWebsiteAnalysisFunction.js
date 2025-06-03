@@ -751,7 +751,7 @@ const validateUrl = async (url) => {
 };
 
 // New function to find WebSocket connection for a taskId with exponential backoff
-async function findConnectionIdForTask(taskId) {
+async function findConnectionIdForTask(taskId,url) {
   // Configuration for retry strategy
   const initialDelay = 100; // Start with 100ms delay
   const maxDelay = 5000; // Maximum delay of 5 seconds
