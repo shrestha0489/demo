@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
 // Initialize DynamoDB client
 const client = new DynamoDBClient({});
@@ -7,24 +7,33 @@ const dynamoDb = DynamoDBDocumentClient.from(client);
 
 export const handleMessage = async (event) => {
   const connectionId = event.requestContext.connectionId;
-  const { taskId } = JSON.parse(event.body);
+  const { taskId, url } = JSON.parse(event.body);
 
-  console.log("Handling connectionId:", connectionId, "taskId:", taskId);
+  console.log("Handling connectionId:", connectionId, "taskId:", taskId, "url:", url);
 
   try {
-    // Use PutCommand to ensure taskId is directly associated with the connectionId
+    await dynamoDb.send(
+      new DeleteCommand({
+        TableName: "demoWebsiteAnalysis",
+        Key: {
+          url,
+          taskId_connectionId: `${taskId}$$$${taskId}`,
+        },
+      }),
+    );
+
     await dynamoDb.send(
       new PutCommand({
-        TableName: "demoWebsiteAnalysisResults",
+        TableName: "demoWebsiteAnalysis",
         Item: {
-          taskId, // Set the connectionId as the key
-          connectionId, // Set the taskId to associate with the connectionId
+          url, // PK
+          taskId_connectionId: `${taskId}$$$${connectionId}`, // composite SK
         },
       }),
     );
 
     console.log(
-      `Successfully updated taskId for connectionId: ${connectionId}`,
+      `Successfully updated record for url: ${url}, taskId: ${taskId}, connectionId: ${connectionId}`,
     );
     return {
       statusCode: 200,
