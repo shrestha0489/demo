@@ -662,7 +662,11 @@ By focusing on a single, compelling hero message, trimming CTA clutter, and surf
 
 // Initialize DynamoDB clients
 const client = new DynamoDBClient({});
-const dynamoDb = DynamoDBDocumentClient.from(client);
+const dynamoDb = DynamoDBDocumentClient.from(client, {
+  marshallOptions: {
+    removeUndefinedValues: true,
+  },
+});
 
 const normalizeUrl = (url) => {
   return url
@@ -747,7 +751,7 @@ const validateUrl = async (url) => {
 };
 
 // New function to find WebSocket connection for a taskId with exponential backoff
-async function findConnectionIdForTask(taskId) {
+async function findConnectionIdForTask(taskId,url) {
   // Configuration for retry strategy
   const initialDelay = 100; // Start with 100ms delay
   const maxDelay = 5000; // Maximum delay of 5 seconds
