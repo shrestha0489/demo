@@ -662,7 +662,11 @@ By focusing on a single, compelling hero message, trimming CTA clutter, and surf
 
 // Initialize DynamoDB clients
 const client = new DynamoDBClient({});
-const dynamoDb = DynamoDBDocumentClient.from(client);
+const dynamoDb = DynamoDBDocumentClient.from(client, {
+  marshallOptions: {
+    removeUndefinedValues: true,
+  },
+});
 
 const normalizeUrl = (url) => {
   return url
