@@ -21,11 +21,16 @@ Make sure you have Docker installed and running on your machine.
    await client.send(new PostToConnectionCommand(params));
    ```
 
-2. Run the setup script to initialize the testing environment:
+2. Install the packages
+   Run 
+   ```
+   npm install
+   ```
+
+3. Run the setup script to initialize the testing environment:
 
    ```
-   cd scripts
-   ./setup-test.sh
+   npm run test
    ```
 
 ### Troubleshooting

@@ -15,10 +15,10 @@ function generateUUID() {
 
 async function createTask(url, taskId) {
   const params = {
-    TableName: process.env.RESULT_TABLE || "demoWebsiteAnalysisResults",
+    TableName: process.env.CONNECTIONS_TABLE || "demoWebsiteAnalysis",
     Item: {
-      taskId,
       url,
+      taskId_connectionId: `${taskId}$$$${taskId}`, // Composite key for taskId and connectionId
       status: "pending",
       timestamp: new Date().toISOString(),
     },
