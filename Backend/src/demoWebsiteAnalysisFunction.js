@@ -1,14 +1,14 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-  DynamoDBDocumentClient,
-  UpdateCommand,
-  QueryCommand,
-} from "@aws-sdk/lib-dynamodb";
 import {
   ApiGatewayManagementApiClient,
   PostToConnectionCommand,
 } from "@aws-sdk/client-apigatewaymanagementapi";
-import axios from 'axios';
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import {
+  DynamoDBDocumentClient,
+  QueryCommand,
+} from "@aws-sdk/lib-dynamodb";
+import { mySQLQueryExecuteUsingPromise } from "./RDSConnector.js";
+import { escapeSQL, extractBaseDomain, normalizeUrl } from "./utils.js";
 
 // Configuration from environment variables
 const CONFIG = {
@@ -19,10 +19,20 @@ const CONFIG = {
   RETRY_DELAY: parseInt(process.env.RETRY_DELAY || "20"),
   CONNECTIONS_TABLE:
     process.env.CONNECTIONS_TABLE || "demoWebsiteAnalysis",
-  ANALYSIS_TABLE: process.env.CONNECTIONS_TABLE || "demoWebsiteAnalysis",
-  WEBSITE_ANALYSIS_TABLE:
-    process.env.WEBSITE_ANALYSIS_TABLE || "demoWebsiteAnalysisNew",
+  MYSQL_DB_URL: process.env.MYSQL_DB_URL || "proxy-1716514837539-spike-backend-database.proxy-co6sfcmgwmt8.us-east-1.rds.amazonaws.com",
+  MYSQL_DB_USER_NAME: process.env.MYSQL_DB_USER_NAME || "app_user",
+  MYSQL_DB_NAME: process.env.MYSQL_DB_NAME || "spike_backend",
+  MYSQL_DB_PORT: process.env.MYSQL_DB_PORT || "3306",
+  MYSQL_DB_PASSWORD: process.env.MYSQL_DB_PASSWORD || "password",
 };
+
+// Initialize DynamoDB clients (only for WebSocket connections)
+const client = new DynamoDBClient({});
+const dynamoDb = DynamoDBDocumentClient.from(client, {
+  marshallOptions: {
+    removeUndefinedValues: true,
+  },
+});
 
 const websiteIssues = {
   "getgsi.com": [
@@ -660,76 +670,152 @@ By focusing on a single, compelling hero message, trimming CTA clutter, and surf
   ],
 };
 
-// Initialize DynamoDB clients
-const client = new DynamoDBClient({});
-const dynamoDb = DynamoDBDocumentClient.from(client, {
-  marshallOptions: {
-    removeUndefinedValues: true,
-  },
-});
-
-const normalizeUrl = (url) => {
-  return url
-    .replace(/^https?:\/\//, "") // Remove protocol (http:// or https://)
-    .replace(/\/+$/, "") // Remove trailing slashes
-};
-
-// Helper function to fetch analysis data for a URL from DynamoDB
 async function fetchWebsiteAnalysis(url) {
-  const normalizedUrl = normalizeUrl(url);
-  console.log(`Fetching analysis data for normalized URL: ${normalizedUrl}`);
-
   try {
-    // Since 'url' is the partition key, we can use a direct query
-    const params = {
-      TableName: CONFIG.WEBSITE_ANALYSIS_TABLE,
-      KeyConditionExpression: "#urlAttr = :url",
-      ExpressionAttributeNames: {
-        "#urlAttr": "url", // Use expression attribute name for reserved keyword
-      },
-      ExpressionAttributeValues: {
-        ":url": normalizedUrl,
-      },
-    };
-
-    const result = await dynamoDb.send(new QueryCommand(params));
-
-    if (!result.Items || result.Items.length === 0) {
-      console.log(`No analysis found for URL: ${normalizedUrl}`);
+    const fullUrl = normalizeUrl(url);
+    const domainUrl = extractBaseDomain(fullUrl);
+    
+    console.log(`Fetching analysis for domain: ${domainUrl}`);
+    
+    // Step 1: Fetch all problems for the domain
+    const problemsQuery = `SELECT id, descr, solution, impact, theme, domain_url, created_at 
+                          FROM problem
+                          WHERE domain_url = '${escapeSQL(domainUrl)}'`;
+    
+    const problems = await mySQLQueryExecuteUsingPromise(problemsQuery);
+    
+    if (!problems || problems.length === 0) {
+      console.log(`No problems found for domain: ${domainUrl}`);
       return null;
     }
+    
+    // Extract all problem IDs
+    const problemIds = problems.map(problem => problem.id);
+    
+    // Step 2: Fetch all experiments for these problems in a single query
+    const experimentsQuery = `SELECT id, name, problem_id, start_date, end_date, created_at 
+                            FROM experiments 
+                            WHERE problem_id IN (${problemIds.join(',')})`;
+    
+    const experiments = await mySQLQueryExecuteUsingPromise(experimentsQuery);
+    
+    // Create a map of experiments by problem_id
+    const experimentsByProblem = new Map();
+    const experimentIds = [];
+    
+    experiments.forEach(experiment => {
+      experimentIds.push(experiment.id);
+      
+      if (!experimentsByProblem.has(experiment.problem_id)) {
+        experimentsByProblem.set(experiment.problem_id, []);
+      }
+      
+      experimentsByProblem.get(experiment.problem_id).push(experiment);
+    });
+    
+    // Step 3: Fetch all variants for these experiments in a single query
+    const variantsQuery = `SELECT id, name, experiment_id, status, created_at 
+                         FROM variants 
+                         WHERE experiment_id IN (${experimentIds.length > 0 ? experimentIds.join(',') : '0'})`;
+    
+    const variants = await mySQLQueryExecuteUsingPromise(variantsQuery);
+    
+    // Create a map of variants by experiment_id
+    const variantsByExperiment = new Map();
+    const variantIds = [];
+    
+    variants.forEach(variant => {
+      variantIds.push(variant.id);
+      
+      if (!variantsByExperiment.has(variant.experiment_id)) {
+        variantsByExperiment.set(variant.experiment_id, []);
+      }
+      
+      variantsByExperiment.get(variant.experiment_id).push(variant);
+    });
+    
+    // Step 4: Fetch all changes for these variants in a single query
+    const changesQuery = `SELECT id, selector, html, script, placement, webpage_url, variant_id, created_at 
+                        FROM changes 
+                        WHERE variant_id IN (${variantIds.length > 0 ? variantIds.join(',') : '0'})`;
+    
+    const changes = await mySQLQueryExecuteUsingPromise(changesQuery);
+    
+    // Create a map of changes by variant_id
+    const changesByVariant = new Map();
+    
+    changes.forEach(change => {
+      if (!changesByVariant.has(change.variant_id)) {
+        changesByVariant.set(change.variant_id, []);
+      }
+      
+      changesByVariant.get(change.variant_id).push(change);
+    });
+    
+    // Format the data in a hierarchical structure
+    const results = [];
+    
+    for (const problem of problems) {
+      const problemData = {
+        problemDescription: problem.descr,
+        solutionText: problem.solution,
+        impactText: problem.impact,
+        theme: problem.theme,
+        experiments: []
+      };
+      
+      // Add experiments for this problem
+      const problemExperiments = experimentsByProblem.get(problem.id) || [];
+      
+      for (const experiment of problemExperiments) {
+        const experimentData = {
+          name: experiment.name,
+          startDate: experiment.start_date,
+          endDate: experiment.end_date,
+          variants: []
+        };
+        
+        // Add variants for this experiment
+        const experimentVariants = variantsByExperiment.get(experiment.id) || [];
+        
+        for (const variant of experimentVariants) {
+          const variantData = {
+            name: variant.name,
+            status: variant.status,
+            changes: []
+          };
+          
+          // Add changes for this variant
+          const variantChanges = changesByVariant.get(variant.id) || [];
+          
+          for (const change of variantChanges) {
+            variantData.changes.push({
+              selector: change.selector,
+              html: change.html,
+              script: change.script,
+              placement: change.placement,
+              webpageUrl: change.webpage_url
+            });
+          }
+          
+          experimentData.variants.push(variantData);
+        }
+        
+        problemData.experiments.push(experimentData);
+      }
+      
+      results.push(problemData);
+    }
 
-    console.log(
-      `Found ${result.Items.length} analysis items for URL: ${normalizedUrl}`,
-    );
-    console.log("results:",JSON.stringify(result.Items));
-
-    // Create return object with template literals format for strings
-    let analysis = {};
-
-    let results = []
-
-    result.Items.forEach(item => {
-      item.problems.forEach(problem => {
-        results.push({
-          problemDescription: problem.problemDescription || "",
-          solutionText: problem.solutionText || "",
-          impactText: problem.impactText || "",
-          path: `https://${item.url}${item.path}`,
-          variantHTML: problem.variantHTML
-        });
-      })
-    })
-
-
-
-    console.log("actual problems: ", results);
-    // Format the data with the fields in the exact format requested
-    analysis[normalizedUrl] = results;
-
+    // Format in the expected structure - domainUrl as key, results as value
+    const analysis = {};
+    analysis[domainUrl] = results;
+    
+    console.log(`Found ${results.length} problems for domain: ${domainUrl}`);
     return analysis;
+    
   } catch (error) {
-    console.error(`Error fetching analysis for URL ${normalizedUrl}:`, error);
+    console.error(`Error fetching analysis from RDS for URL ${url}:`, error);
     throw error;
   }
 }
@@ -782,7 +868,7 @@ async function findConnectionIdForTask(taskId,url) {
         `Attempt ${attempt + 1}/${maxAttempts} to find connectionId...`,
       );
       const result = await dynamoDb.send(new QueryCommand(params));
-      console.log("result: ",result);
+      console.log("result: ", result);
 
       if (result.Items && result.Items.length > 0) {
         // Extract connectionId from the composite sort key (taskId$$$connectionId)
