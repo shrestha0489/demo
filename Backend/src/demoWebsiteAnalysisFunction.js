@@ -185,24 +185,25 @@ async function fetchWebsiteAnalysis(url) {
   }
 }
 
-// Helper function to validate if URL exists in our database or static data
+// Helper function to validate if URL exists in our database
 const validateUrl = async (url) => {
-  const normalizedUrl = normalizeUrl(url);
-
-  // Then check database
   try {
-    const dbAnalysis = await fetchWebsiteAnalysis(url);
-    return dbAnalysis && dbAnalysis.hasOwnProperty(normalizedUrl)
-      ? normalizedUrl
-      : null;
+    const fullUrl = normalizeUrl(url);
+    const domainUrl = extractBaseDomain(fullUrl);
+    
+    // Check if domain exists in the database
+    const query = `SELECT COUNT(*) as count FROM problem WHERE domain_url = '${escapeSQL(domainUrl)}'`;
+    const result = await mySQLQueryExecuteUsingPromise(query);
+    
+    return result[0].count > 0 ? domainUrl : null;
   } catch (error) {
-    console.error(`Error validating URL ${normalizedUrl}:`, error);
+    console.error(`Error validating URL ${url}:`, error);
     return null;
   }
 };
 
-// New function to find WebSocket connection for a taskId with exponential backoff
-async function findConnectionIdForTask(taskId,url) {
+// Function to find WebSocket connection for a taskId with exponential backoff
+async function findConnectionIdForTask(taskId, url) {
   // Configuration for retry strategy
   const initialDelay = 100; // Start with 100ms delay
   const maxDelay = 5000; // Maximum delay of 5 seconds
@@ -529,29 +530,15 @@ export const demoWebsiteAnalysisFunction = async (event) => {
 
     await sendProgressWithDelay();
 
-    // Fetch analysis results - prioritize static data, then fetch from DB
-    let analysisData;
-
-    console.log(`Fetching analysis from database for ${validUrl}`);
-    const dbWebsiteIssues = await fetchWebsiteAnalysis(parsedEvent.url);
+    // Fetch analysis results from MySQL
+    console.log(`Fetching analysis from MySQL database for ${url}`);
+    const dbWebsiteIssues = await fetchWebsiteAnalysis(url);
 
     if (!dbWebsiteIssues || !dbWebsiteIssues[validUrl]) {
       throw new Error(`No analysis data found for URL: ${validUrl}`);
     }
 
-    analysisData = dbWebsiteIssues[validUrl];
-
-    // Format the analysis data for response with template literals format
-    const analysisResults = analysisData;
-
-    // Final update in DynamoDB with completed status and results
-    const finalUpdateSuccess = await updateTaskStatus(url,connectionId,taskId, "completed", {
-      problems: analysisResults,
-    });
-
-    if (!finalUpdateSuccess) {
-      throw new Error("Could not complete task - status update failed");
-    }
+    const analysisResults = dbWebsiteIssues[validUrl];
 
     // Send final results through WebSocket if connected
     if (connectionId) {
@@ -582,25 +569,21 @@ export const demoWebsiteAnalysisFunction = async (event) => {
   } catch (error) {
     console.error("Error in lambda function:", error);
 
-    if (taskId) {
+    if (connectionId) {
       try {
-        await updateTaskStatus(url,connectionId,taskId, "error", { error: error.message });
-
-        if (connectionId) {
-          await sendMessageToClient(
-            connectionId,
-            {
-              taskId,
-              status: "error",
-              error: error.message,
-              currentStep: "error",
-              progress: 0,
-            },
-            CONFIG.WEBSOCKET_ENDPOINT.replace("wss://", "https://"),
-          );
-        }
+        await sendMessageToClient(
+          connectionId,
+          {
+            taskId,
+            status: "error",
+            error: error.message,
+            currentStep: "error",
+            progress: 0,
+          },
+          CONFIG.WEBSOCKET_ENDPOINT.replace("wss://", "https://"),
+        );
       } catch (updateError) {
-        console.error("Error updating task status after failure:", updateError);
+        console.error("Error sending error status via WebSocket:", updateError);
       }
     }
 
