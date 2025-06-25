@@ -344,10 +344,6 @@ export const sendMessageToClient = async (connectionId, message, endpoint) => {
   };
 
   try {
-    // await axios.post("http://host.docker.internal:3002/broadcast", {
-    //   taskId: message.taskId,
-    //   ...message,
-    // });
     await client.send(new PostToConnectionCommand(params));
     console.log(`Message sent to connection: ${connectionId}`);
   } catch (error) {
