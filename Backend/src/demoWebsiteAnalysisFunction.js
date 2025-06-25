@@ -363,55 +363,6 @@ export const sendMessageToClient = async (connectionId, message, endpoint) => {
   }
 };
 
-// Helper function to update task status in DynamoDB
-export const updateTaskStatus = async (url, connectionId, taskId, status, data = {}) => {
-  console.log("Updating task status in DynamoDB:", url, taskId, connectionId, status, data);
-
-  const timestamp = new Date().toISOString();
-  const sortKey = `${taskId}$$$${connectionId}`;
-  
-  const updateExpression = ["set #status = :status", "#timestamp = :timestamp"];
-  const expressionAttributeValues = {
-    ":status": status,
-    ":timestamp": timestamp,
-  };
-  const expressionAttributeNames = {
-    "#status": "status",
-    "#timestamp": "timestamp",
-  };
-
-  if (data.problems) {
-    updateExpression.push("problems = :problems");
-    expressionAttributeValues[":problems"] = data.problems;
-  }
-
-  if (data.error) {
-    updateExpression.push("#error = :error");
-    expressionAttributeValues[":error"] = data.error;
-    expressionAttributeNames["#error"] = "error";
-  }
-
-  const params = {
-    TableName: CONFIG.ANALYSIS_TABLE,
-    Key: { 
-      url: url,
-      taskId_connectionId: sortKey
-    },
-    UpdateExpression: updateExpression.join(", "),
-    ExpressionAttributeNames: expressionAttributeNames,
-    ExpressionAttributeValues: expressionAttributeValues,
-  };
-
-  try {
-    await dynamoDb.send(new UpdateCommand(params));
-    console.log(`Task ${taskId} for URL ${url} updated successfully in DynamoDB`);
-    return true;
-  } catch (error) {
-    console.error(`Error updating task status in DynamoDB for URL ${url}, taskId ${taskId}:`, error);
-    throw error;
-  }
-};
-
 // Enhanced progress update with error handling
 export const sendProgressUpdate = async (
   connectionId,
@@ -474,11 +425,6 @@ export const demoWebsiteAnalysisFunction = async (event) => {
           parsedEvent.endpoint,
         );
       }
-
-      // Update task status to error
-      await updateTaskStatus(url,connectionId,taskId, "error", {
-        error: "Client doesn't exist",
-      });
 
       return {
         statusCode: 404,
