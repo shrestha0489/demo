@@ -92,7 +92,7 @@ for row in $(jq -c '.[]' "$LAMBDA_CONFIG_FILE"); do
       --handler "$HANDLER_PATH" \
       --zip-file fileb://../demo.zip \
       --timeout 600 \
-      --environment "Variables={CONNECTIONS_TABLE=demoWebsiteAnalysisResults,ANALYSIS_TABLE=demoWebsiteAnalysisResults,WEBSITE_ANALYSIS_TABLE=demoWebsiteAnalysis,API_ENDPOINT=http://localhost:4566}" \
+      --environment "Variables={CONNECTIONS_TABLE=demoWebsiteAnalysis,ANALYSIS_TABLE=demoWebsiteAnalysis,WEBSITE_ANALYSIS_TABLE=demoWebsiteAnalysisNew,API_ENDPOINT=http://localhost:4566}" \
       || { echo "Error deploying Lambda: $LAMBDA_NAME"; exit 1; }
 done
 
@@ -311,56 +311,47 @@ echo "🌱 Seeding WEBSITE_ANALYSIS_TABLE with sample data..."
 
 # Add sample entries to the WEBSITE_ANALYSIS_TABLE
 aws --endpoint-url=http://localhost:4566 --no-cli-pager dynamodb put-item \
-    --table-name demoWebsiteAnalysis \
+    --table-name demoWebsiteAnalysisNew \
     --item '{
         "url": {"S": "getgsi.com"},
-        "problems": {"L": [
-            {"M": {
-                "problemDescription": {"S": "Sample problem description for getgsi.com"},
-                "solutionText": {"S": "Sample solution text for getgsi.com"},
-                "impactText": {"S": "Sample impact text for getgsi.com"}
-            }}
-        ]}
-    }'
-
-aws --endpoint-url=http://localhost:4566 --no-cli-pager dynamodb put-item \
-    --table-name demoWebsiteAnalysis \
-    --item '{
-        "url": {"S": "squadcast.com"},
-        "problems": {"L": [
-            {"M": {
-                "problemDescription": {"S": "Sample problem description for squadcast.com"},
-                "solutionText": {"S": "Sample solution text for squadcast.com"},
-                "impactText": {"S": "Sample impact text for squadcast.com"}
-            }}
-        ]}
-    }'
-
-# Add a sample task to the CONNECTIONS_TABLE/ANALYSIS_TABLE
-aws --endpoint-url=http://localhost:4566 --no-cli-pager dynamodb put-item \
-    --table-name demoWebsiteAnalysisResults \
-    --item '{
-        "taskId": {"S": "task123"},
+        "taskId_connectionId": {"S": "task123$$$conn456"},
         "status": {"S": "COMPLETED"},
-        "data": {"M": {
-            "url": {"S": "getgsi.com"},
-            "analysisResults": {"L": [
+        "path": {"S": "testing"},
+        "problems": {"L": [
                 {"M": {
                     "problemDescription": {"S": "Sample problem from task123"},
                     "solutionText": {"S": "Sample solution from task123"},
-                    "impactText": {"S": "Sample impact from task123"}
+                    "impactText": {"S": "Sample impact from task123"},
+                    "variantHTML": {"S": "<html><body>Sample HTML content for testing</body></html>"}
                 }}
             ]}
-        }}
+    }'
+
+# Add a sample task to the CONNECTIONS_TABLE/ANALYSIS_TABLE with path and varianthtml
+aws --endpoint-url=http://localhost:4566 --no-cli-pager dynamodb put-item \
+    --table-name demoWebsiteAnalysis \
+    --item '{
+        "url": {"S": "getgsi.com"},
+        "taskId_connectionId": {"S": "task123$$$conn456"},
+        "status": {"S": "COMPLETED"},
+        "path": {"S": "testing"},
+        "problems": {"L": [
+                {"M": {
+                    "problemDescription": {"S": "Sample problem from task123"},
+                    "solutionText": {"S": "Sample solution from task123"},
+                    "impactText": {"S": "Sample impact from task123"},
+                    "variantHTML": {"S": "<html><body>Sample HTML content for testing</body></html>"}
+                }}
+            ]}
     }'
 
 echo "✅ Deployment Complete! System is ready for testing."
 
 # Display useful information
 echo "🔍 Table Information:"
-echo "  - CONNECTIONS_TABLE: demoWebsiteAnalysisResults (partition key: taskId)"
-echo "  - ANALYSIS_TABLE: demoWebsiteAnalysisResults (same table, partition key: taskId)"
-echo "  - WEBSITE_ANALYSIS_TABLE: demoWebsiteAnalysis (partition key: url)"
+echo "  - CONNECTIONS_TABLE: demoWebsiteAnalysisNew (partition key: url)"
+echo "  - ANALYSIS_TABLE: demoWebsiteAnalysisNew (same table, partition key: url)"
+echo "  - WEBSITE_ANALYSIS_TABLE: demoWebsiteAnalysis (partition key: url and sorting key: taskId_connectionId)"
 echo ""
 echo "🔗 REST API Endpoints:"
 echo "  - Start Analysis: $API_URL/analysis"
