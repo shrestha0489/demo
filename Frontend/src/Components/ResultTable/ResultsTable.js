@@ -43,6 +43,7 @@ const TableLoader = ({ progress, currentStep }) => (
 );
 
 function trimText(sentence) {
+  console.log("Trimming text:", sentence);
   let words = sentence.split(" ").length;
   if (words > 10) {
     return sentence.split(" ").slice(0, 10).join(" ") + "...";
@@ -51,6 +52,7 @@ function trimText(sentence) {
 }
 
 const ResultsTable = ({ data }) => {
+  console.log("ResultsTable data:", data);
   const [show, setShow] = React.useState(false);
   const [problem, setProblem] = React.useState(null);
 
@@ -100,7 +102,6 @@ const ResultsTable = ({ data }) => {
                   <th>Problem Description</th>
                   <th>Solution</th>
                   <th>Impact</th>
-                  <th>URL</th>
                 </tr>
               </thead>
               <tbody>
@@ -126,18 +127,6 @@ const ResultsTable = ({ data }) => {
                       <td>
                         <div className={styles.impactCell}>
                           {trimText(problem.impactText)}
-                        </div>
-                      </td>
-                      <td>
-                        <div className={styles.impactCell}>
-                          <a
-                            onClick={(e) => e.stopPropagation()}
-                            href={problem.path}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {problem.path}
-                          </a>
                         </div>
                       </td>
                     </tr>
